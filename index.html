@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)file:///C:/Users/PC2306/Downloads/index_20.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>국어쌤 AI v3</title>
+<link href="file:///C:/Users/PC2306/Downloads/index2_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410; --paper: #faf8f4; --warm: #f5f0e8;
+    --accent: #c0392b; --accent2: #2c5f8a; --gold: #b8860b;
+    --muted: #7a7069; --border: #d4cdc4; --card: #ffffff;
+    --shadow: 0 2px 16px rgba(26,20,16,0.08); --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  header { background: var(--ink); color: #fff; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 54px; position: sticky; top: 0; z-index: 200; border-bottom: 3px solid var(--accent); }
+  .logo { font-family: 'Noto Serif KR', serif; font-size: 1.2rem; font-weight: 900; }
+  .logo span { color: var(--accent); }
+  .header-sub { font-size: 0.72rem; color: #aaa; }
+
+  /* API KEY BAR */
+  .api-bar { background: #17130f; border-bottom: 1px solid #2a2420; padding: 9px 24px; display: flex; align-items: center; gap: 12px; position: sticky; top: 54px; z-index: 190; flex-wrap: wrap; }
+  .api-bar-label { font-size: 0.75rem; color: #777; white-space: nowrap; font-weight: 700; }
+  .api-key-input { flex: 1; min-width: 200px; max-width: 400px; padding: 6px 12px; background: #0e0b08; border: 1.5px solid #333; border-radius: 6px; color: #ddd; font-size: 0.82rem; font-family: 'Courier New', monospace; outline: none; transition: border-color 0.15s; }
+  .api-key-input:focus { border-color: #4a86c8; }
+  .api-key-input::placeholder { color: #444; }
+  .api-status { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+  .api-status.set { background: #1b3d28; color: #5cb85c; }
+  .api-status.unset { background: #3d2b0a; color: #f0a030; }
+  .api-bar-hint { font-size: 0.68rem; color: #555; margin-left: auto; }
+  .api-bar-hint a { color: #777; text-decoration: underline; cursor: pointer; }
+  .api-bar-hint a:hover { color: #aaa; }
+
+  /* LAYOUT */
+  .app { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 94px); }
+  .sidebar { background: var(--ink); padding: 20px 0; position: sticky; top: 94px; height: calc(100vh - 94px); overflow-y: auto; }
+  .sidebar-section { padding: 0 14px; margin-bottom: 6px; }
+  .sidebar-label { font-size: 0.62rem; color: #555; letter-spacing: 2px; text-transform: uppercase; padding: 10px 8px 5px; font-weight: 700; }
+  .nav-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 11px; background: transparent; border: none; border-radius: 7px; color: #bbb; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem; text-align: left; transition: all 0.15s; margin-bottom: 2px; }
+  .nav-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .nav-btn.active { background: var(--accent); color: #fff; }
+  .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
+  .nav-badge { margin-left: auto; background: rgba(255,255,255,0.12); font-size: 0.6rem; padding: 1px 5px; border-radius: 8px; color: #999; }
+  .nav-btn.active .nav-badge { background: rgba(255,255,255,0.25); color: #fff; }
+  .sidebar-divider { border: none; border-top: 1px solid #222; margin: 10px 14px; }
+
+  main { padding: 28px; max-width: 860px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-header { margin-bottom: 24px; }
+  .page-title { font-family: 'Noto Serif KR', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
+  .page-desc { color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
+
+  .form-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  .form-card h3 { font-family: 'Noto Serif KR', serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-group label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+  .form-group select, .form-group input, .form-group textarea { width: 100%; padding: 8px 11px; border: 1.5px solid var(--border); border-radius: 7px; font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem; color: var(--ink); background: var(--paper); transition: border-color 0.15s; outline: none; }
+  .form-group select:focus, .form-group input:focus, .form-group textarea:focus { border-color: var(--accent2); }
+  .form-group textarea { resize: vertical; line-height: 1.6; }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+  .chip-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); margin-bottom: 6px; display: block; }
+  .chip { padding: 4px 12px; border: 1.5px solid var(--border); border-radius: 18px; font-size: 0.78rem; cursor: pointer; background: transparent; font-family: 'Noto Sans KR', sans-serif; color: var(--muted); transition: all 0.15s; }
+  .chip:hover { border-color: var(--accent2); color: var(--accent2); }
+  .chip.selected { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+
+  .btn-generate { width: 100%; padding: 13px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: 'Noto Serif KR', serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px; margin-top: 8px; }
+  .btn-generate:hover { background: #a93226; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,57,43,0.3); }
+  .btn-generate:disabled { background: #ccc; transform: none; box-shadow: none; cursor: not-allowed; }
+
+  .result-area { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: none; margin-top: 4px; }
+  .result-area.show { display: block; }
+  .result-toolbar { background: var(--warm); border-bottom: 1px solid var(--border); padding: 9px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .result-toolbar-left { display: flex; align-items: center; gap: 8px; }
+  .result-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .result-tag { background: var(--accent2); color: #fff; font-size: 0.68rem; padding: 2px 8px; border-radius: 8px; font-weight: 700; }
+  .toolbar-actions { display: flex; gap: 6px; }
+  .btn-tool { padding: 5px 11px; border: 1.5px solid var(--border); border-radius: 6px; background: white; font-family: 'Noto Sans KR', sans-serif; font-size: 0.76rem; cursor: pointer; color: var(--ink); transition: all 0.15s; }
+  .btn-tool:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-tool.copied { background: var(--accent2); color: white; border-color: var(--accent2); }
+  .result-content { padding: 24px; font-size: 0.9rem; line-height: 1.9; white-space: pre-wrap; font-family: 'Noto Sans KR', sans-serif; min-height: 80px; }
+
+  .loading-wrap { padding: 44px; text-align: center; display: none; }
+  .loading-wrap.show { display: block; }
+  .loading-dots { display: inline-flex; gap: 7px; margin-bottom: 12px; }
+  .loading-dots span { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; background: var(--accent2); }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; background: var(--gold); }
+  @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+  .loading-text { color: var(--muted); font-size: 0.84rem; }
+
+  .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .quick-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); text-align: center; }
+  .quick-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 18px rgba(0,0,0,0.1); }
+  .quick-icon { font-size: 1.7rem; margin-bottom: 7px; }
+  .quick-name { font-size: 0.86rem; font-weight: 700; margin-bottom: 3px; }
+  .quick-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+
+  .history-list { display: flex; flex-direction: column; gap: 9px; }
+  .history-item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.15s; }
+  .history-item:hover { border-color: var(--accent2); }
+  .history-type { background: var(--warm); border-radius: 5px; padding: 3px 9px; font-size: 0.73rem; font-weight: 700; color: var(--accent2); white-space: nowrap; }
+  .history-preview { font-size: 0.83rem; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .history-time { font-size: 0.73rem; color: #bbb; white-space: nowrap; }
+  .empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
+  .empty-icon { font-size: 2.8rem; margin-bottom: 10px; opacity: 0.4; }
+  .empty-text { font-size: 0.88rem; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+  .pdf-upload-area { border: 2px dashed var(--border); border-radius: var(--radius); padding: 36px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--warm); }
+  .pdf-upload-area:hover { border-color: var(--accent2); background: #f0f4f8; }
+  .pdf-upload-area.has-file { border-color: #5cb85c; background: #f0f8f0; border-style: solid; }
+  .pdf-upload-icon { font-size: 2.2rem; margin-bottom: 8px; }
+  .pdf-upload-text { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+  .pdf-info-box { display: flex; align-items: center; gap: 10px; background: #f0f8f0; border: 1px solid #5cb85c; border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 0.84rem; }
+  .pdf-info-box span { color: #2a6a2a; font-weight: 500; }
+  #pdf-pagecount { color: var(--muted) !important; font-weight: 400 !important; font-size: 0.8rem; }
+  .pdf-clear-btn { margin-left: auto; background: none; border: 1px solid #ccc; border-radius: 5px; padding: 3px 9px; cursor: pointer; font-size: 0.78rem; color: var(--muted); }
+  .pdf-clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">국어쌤 <span>AI</span></div>
+  <div class="header-sub">국어 수업 자료 생성 · v3.0 (Gemini)</div>
+</header>
+
+<div class="api-bar">
+  <div class="api-bar-label">🔑 Gemini API 키</div>
+  <input class="api-key-input" type="password" id="api-key-input" placeholder="AIza... (Google AI Studio API 키 입력)" oninput="updateApiStatus()">
+  <div class="api-status set" id="api-status">✓ 입력됨</div>
+  <div class="api-bar-hint">
+    무료 키 발급 → <a onclick="window.open(&#39;https://aistudio.google.com/apikey&#39;,&#39;_blank&#39;)">aistudio.google.com/apikey</a>
+    &nbsp;·&nbsp; 신용카드 불필요 · 하루 250회 무료
+  </div>
+</div>
+
+<div class="app">
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">홈</div>
+      <button class="nav-btn" onclick="navigate(&#39;home&#39;)"><span class="nav-icon">🏠</span> 대시보드</button>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">문학</div>
+      <button class="nav-btn" onclick="navigate(&#39;poetry&#39;)"><span class="nav-icon">🌸</span> 시 감상 문제 <span class="nav-badge">수능/내신</span></button>
+      <button class="nav-btn" onclick="navigate(&#39;prose&#39;)"><span class="nav-icon">📖</span> 소설 분석 문제 <span class="nav-badge">수능/내신</span></button>
+      <button class="nav-btn" onclick="navigate(&#39;classic&#39;)"><span class="nav-icon">📜</span> 고전 문학 <span class="nav-badge">수능</span></button>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">독해·비문학</div>
+      <button class="nav-btn" onclick="navigate(&#39;reading&#39;)"><span class="nav-icon">🔍</span> 독해 지문 생성 <span class="nav-badge">수능/내신</span></button>
+      <button class="nav-btn" onclick="navigate(&#39;summary&#39;)"><span class="nav-icon">✏️</span> 요약·서술형</button>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">문법</div>
+      <button class="nav-btn active" onclick="navigate(&#39;grammar&#39;)"><span class="nav-icon">📐</span> 문법 문제 <span class="nav-badge">수능/내신</span></button>
+      <button class="nav-btn" onclick="navigate(&#39;vocab&#39;)"><span class="nav-icon">🔤</span> 어휘·한자</button>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">기록</div>
+      <button class="nav-btn" onclick="navigate(&#39;history&#39;)"><span class="nav-icon">📋</span> 생성 기록</button>
+    </div>
+    <hr class="sidebar-divider">
+    <div class="sidebar-section">
+      <div class="sidebar-label">교과서 연동</div>
+      <button class="nav-btn" onclick="navigate(&#39;pdf&#39;)"><span class="nav-icon">📚</span> PDF 교과서 출제</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HOME -->
+    <div id="page-home" class="page">
+      <div class="page-header">
+        <div class="page-title">안녕하세요, 선생님 👋</div>
+        <div class="page-desc">상단에서 Gemini API 키를 입력하면 무료로 문제를 생성할 수 있어요.<br>키 발급: <strong>aistudio.google.com/apikey</strong> (구글 계정만 있으면 됩니다)</div>
+      </div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="navigate(&#39;poetry&#39;)"><div class="quick-icon">🌸</div><div class="quick-name">시 감상 문제</div><div class="quick-desc">현대시·고전시가 수능/내신형</div></div>
+        <div class="quick-card" onclick="navigate(&#39;prose&#39;)"><div class="quick-icon">📖</div><div class="quick-name">소설 분석 문제</div><div class="quick-desc">서사·인물·서술 방식 분석</div></div>
+        <div class="quick-card" onclick="navigate(&#39;reading&#39;)"><div class="quick-icon">🔍</div><div class="quick-name">독해 지문 생성</div><div class="quick-desc">인문·사회·과학·기술·예술</div></div>
+        <div class="quick-card" onclick="navigate(&#39;grammar&#39;)"><div class="quick-icon">📐</div><div class="quick-name">문법 문제</div><div class="quick-desc">음운·형태·통사·의미·담화</div></div>
+        <div class="quick-card" onclick="navigate(&#39;summary&#39;)"><div class="quick-icon">✏️</div><div class="quick-name">요약·서술형</div><div class="quick-desc">채점 기준표 포함 서술형</div></div>
+        <div class="quick-card" onclick="navigate(&#39;vocab&#39;)"><div class="quick-icon">🔤</div><div class="quick-name">어휘·한자</div><div class="quick-desc">어휘·한자어·속담·관용어</div></div>
+      </div>
+      <div class="form-card">
+        <h3>📋 최근 생성 기록</h3>
+        <div id="home-history-list"><div class="history-list"><div class="history-item" onclick="showDetail(0)"><div class="history-type">교과서 출제</div><div class="history-preview">[지문시작]
+먼 훗날 당신이 찾으시면
+그때에 내 말이 <u>ⓐ'잊었노라'</u>
+
+당신이 속으로 나무라면
+'무척 그리다가 잊었...</div><div class="history-time">17:17</div></div></div></div>
+      </div>
+    </div>
+
+    <!-- 시 감상 -->
+    <div id="page-poetry" class="page">
+      <div class="page-header"><div class="page-title">🌸 시 감상 문제</div><div class="page-desc">현대시·고전시가 감상 문제를 생성합니다.</div></div>
+      <div class="form-card">
+        <h3>생성 설정</h3>
+        <div class="form-row">
+          <div class="form-group"><label>시험 유형</label><select id="poetry-exam-type"><option>수능형 (5지선다)</option><option>내신형 (5지선다)</option><option>혼합형</option></select></div>
+          <div class="form-group"><label>학년/대상</label><select id="poetry-grade"><option>고1</option><option>고2</option><option>고3 (수능)</option><option>중3</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>난이도</label><select id="poetry-level"><option>기본</option><option>표준</option><option>심화</option><option>최고난도 (킬러)</option></select></div>
+          <div class="form-group"><label>문항 수</label><select id="poetry-qcount"><option>10</option><option selected="">20</option><option>30</option></select></div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;"><label>시 제목 / 작가 (선택)</label><input type="text" id="poetry-title" placeholder="예: 진달래꽃 / 김소월 — 비워두면 AI가 선정"></div>
+        <div class="form-group" style="margin-bottom:12px;"><label>시 본문 직접 입력 (선택)</label><textarea id="poetry-text" rows="4" placeholder="시 본문을 붙여넣으세요..."></textarea></div>
+        <span class="chip-label">포함할 문제 유형</span>
+        <div class="chip-group" id="poetry-qtypes">
+          <button class="chip selected" data-val="표현법(수사법)">표현법(수사법)</button>
+          <button class="chip selected" data-val="화자의 정서·태도">화자의 정서·태도</button>
+          <button class="chip selected" data-val="시어 의미">시어 의미</button>
+          <button class="chip" data-val="구조·전개 방식">구조·전개 방식</button>
+          <button class="chip" data-val="EBS 연계형">EBS 연계형</button>
+          <button class="chip" data-val="외적 준거 감상">외적 준거 감상</button>
+          <button class="chip" data-val="보기 적용">보기 적용</button>
+        </div>
+        <button class="btn-generate" onclick="generate(&#39;poetry&#39;)">✦ 시 감상 문제 생성</button>
+      </div>
+      <div class="loading-wrap" id="poetry-loading"><div class="loading-dots"><span></span><span></span><span></span></div><div class="loading-text">AI가 문제를 생성하고 있습니다...</div></div>
+      <div class="result-area" id="poetry-result">
+        <div class="result-toolbar"><div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="poetry-result-tag"></div></div><div class="toolbar-actions"><button class="btn-tool" onclick="copyResult(&#39;poetry&#39;)">📋 복사</button><button class="btn-tool" onclick="downloadDocx(&#39;poetry&#39;)">📄 워드</button><button class="btn-tool" onclick="downloadPdf(&#39;poetry&#39;)">📑 PDF</button><button class="btn-tool" onclick="printResult(&#39;poetry&#39;)">🖨️ 인쇄</button></div></div>
+        <div class="result-content" id="poetry-result-content"></div>
+      </div>
+    </div>
+
+    <!-- 소설 -->
+    <div id="page-prose" class="page">
+      <div class="page-header"><div class="page-title">📖 소설 분석 문제</div><div class="page-desc">현대소설·고전소설 분석 문제를 생성합니다.</div></div>
+      <div class="form-card">
+        <h3>생성 설정</h3>
+        <div class="form-row">
+          <div class="form-group"><label>시험 유형</label><select id="prose-exam-type"><option>수능형 (5지선다)</option><option>내신형 (5지선다)</option><option>혼합형</option></select></div>
+          <div class="form-group"><label>소설 구분</label><select id="prose-genre"><option>현대소설</option><option>고전소설</option><option>현대수필</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>학년</label><select id="prose-grade"><option>고1</option><option>고2</option><option>고3 (수능)</option></select></div>
+          <div class="form-group"><label>난이도</label><select id="prose-level"><option>기본</option><option>표준</option><option>심화</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>문항 수</label><select id="prose-qcount"><option>10</option><option selected="">20</option><option>30</option></select></div>
+          <div class="form-group"><label>작품명 / 작가 (선택)</label><input type="text" id="prose-title" placeholder="예: 소나기 / 황순원"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;"><label>지문 직접 입력 (선택)</label><textarea id="prose-text" rows="5" placeholder="소설 지문을 붙여넣으세요..."></textarea></div>
+        <span class="chip-label">포함할 문제 유형</span>
+        <div class="chip-group" id="prose-qtypes">
+          <button class="chip selected" data-val="서술 방식">서술 방식</button>
+          <button class="chip selected" data-val="인물 심리·태도">인물 심리·태도</button>
+          <button class="chip selected" data-val="사건·갈등 구조">사건·갈등 구조</button>
+          <button class="chip" data-val="소재·배경 의미">소재·배경 의미</button>
+          <button class="chip" data-val="보기 적용">보기 적용</button>
+          <button class="chip" data-val="비교 감상">비교 감상</button>
+        </div>
+        <button class="btn-generate" onclick="generate(&#39;prose&#39;)">✦ 소설 분석 문제 생성</button>
+      </div>
+      <div class="loading-wrap" id="prose-loading"><div class="loading-dots"><span></span><span></span><span></span></div><div class="loading-text">AI가 문제를 생성하고 있습니다...</div></div>
+      <div class="result-area" id="prose-result">
+        <div class="result-toolbar"><div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="prose-result-tag"></div></div><div class="toolbar-actions"><button class="btn-tool" onclick="copyResult(&#39;prose&#39;)">📋 복사</button><button class="btn-tool" onclick="downloadDocx(&#39;prose&#39;)">📄 워드</button><button class="btn-tool" onclick="downloadPdf(&#39;prose&#39;)">📑 PDF</button><button class="btn-tool" onclick="printResult(&#39;prose&#39;)">🖨️ 인쇄</button></div></div>
+        <div class="result-content" id="prose-result-content"></div>
+      </div>
+    </div>
+
+    <!-- 고전 -->
+    <div id="page-classic" class="page">
+      <div class="page-header"><div class="page-title">📜 고전 문학</div><div class="page-desc">고전시가·고전소설 지문 및 문제를 생성합니다.</div></div>
+      <div class="form-card">
+        <h3>생성 설정</h3>
+        <div class="form-row three">
+          <div class="form-group"><label>장르</label><select id="classic-genre"><option>고전시가</option><option>고전소설</option><option>가사</option><option>시조</option><option>향가·속요</option></select></div>
+          <div class="form-group"><label>시험 유형</label><select id="classic-exam-type"><option>수능형</option><option>내신형</option></select></div>
+          <div class="form-group"><label>난이도</label><select id="classic-level"><option>표준</option><option>심화</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>문항 수</label><select id="classic-qcount"><option>10</option><option selected="">20</option><option>30</option></select></div>
+          <div class="form-group"><label>작품명 (선택)</label><input type="text" id="classic-title" placeholder="예: 청산별곡, 사미인곡..."></div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;"><label>지문 직접 입력 (선택)</label><textarea id="classic-text" rows="4" placeholder="고전 지문을 붙여넣으세요..."></textarea></div>
+        <span class="chip-label">옵션</span>
+        <div class="chip-group" id="classic-options">
+          <button class="chip selected" data-val="현대어 풀이 포함">현대어 풀이 포함</button>
+          <button class="chip" data-val="어구 해석 문제 포함">어구 해석 문제</button>
+          <button class="chip" data-val="작품 해설 포함">작품 해설 포함</button>
+          <button class="chip" data-val="현대 작품과 비교">현대 작품과 비교</button>
+        </div>
+        <button class="btn-generate" onclick="generate(&#39;classic&#39;)">✦ 고전 문학 문제 생성</button>
+      </div>
+      <div class="loading-wrap" id="classic-loading"><div class="loading-dots"><span></span><span></span><span></span></div><div class="loading-text">AI가 문제를 생성하고 있습니다...</div></div>
+      <div class="result-area" id="classic-result">
+        <div class="result-toolbar"><div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="classic-result-tag"></div></div><div class="toolbar-actions"><button class="btn-tool" onclick="copyResult(&#39;classic&#39;)">📋 복사</button><button class="btn-tool" onclick="downloadDocx(&#39;classic&#39;)">📄 워드</button><button class="btn-tool" onclick="downloadPdf(&#39;classic&#39;)">📑 PDF</button><button class="btn-tool" onclick="printResult(&#39;classic&#39;)">🖨️ 인쇄</button></div></div>
+        <div class="result-content" id="classic-result-content"></div>
+      </div>
+    </div>
+
+    <!-- 독해 -->
+    <div id="page-reading" class="page">
+      <div class="page-header"><div class="page-title">🔍 독해 지문 생성</div><div class="page-desc">비문학 독해 지문과 문제를 함께 생성합니다.</div></div>
+      <div class="form-card">
+        <h3>생성 설정</h3>
+        <div class="form-row">
+          <div class="form-group"><label>지문 영역</label><select id="reading-domain"><option>인문 (철학·역사·심리)</option><option>사회 (경제·법·정치)</option><option>과학 (물리·화학·생물)</option><option>기술 (공학·IT)</option><option>예술 (미술·음악·건축)</option><option>융합 지문</option></select></div>
+          <div class="form-group"><label>시험 유형</label><select id="reading-exam-type"><option>수능형 (5지선다)</option><option>내신형 (5지선다)</option><option>서술형 포함</option></select></div>
+        </div>
+        <div class="form-row three">
+          <div class="form-group"><label>학년</label><select id="reading-grade"><option>고1</option><option>고2</option><option>고3</option></select></div>
+          <div class="form-group"><label>지문 길이</label><select id="reading-length"><option>짧음(~400자)</option><option selected="">중간(~700자)</option><option>긴(~1000자)</option></select></div>
+          <div class="form-group"><label>난이도</label><select id="reading-level"><option>기본</option><option>표준</option><option>심화</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>문항 수</label><select id="reading-qcount"><option>10</option><option selected="">20</option><option>30</option></select></div>
+          <div class="form-group"><label>주제어 / 핵심 개념 (선택)</label><input type="text" id="reading-topic" placeholder="예: 양자역학, 공유경제..."></div>
+        </div>
+        <span class="chip-label">포함할 문제 유형</span>
+        <div class="chip-group" id="reading-qtypes">
+          <button class="chip selected" data-val="중심 내용 파악">중심 내용 파악</button>
+          <button class="chip selected" data-val="세부 정보 확인">세부 정보 확인</button>
+          <button class="chip" data-val="추론 및 적용">추론 및 적용</button>
+          <button class="chip" data-val="어휘 의미">어휘 의미</button>
+          <button class="chip" data-val="구조 분석">구조 분석</button>
+          <button class="chip" data-val="빈칸 추론">빈칸 추론</button>
+        </div>
+        <button class="btn-generate" onclick="generate(&#39;reading&#39;)">✦ 독해 지문+문제 생성</button>
+      </div>
+      <div class="loading-wrap" id="reading-loading"><div class="loading-dots"><span></span><span></span><span></span></div><div class="loading-text">AI가 지문과 문제를 생성하고 있습니다...</div></div>
+      <div class="result-area" id="reading-result">
+        <div class="result-toolbar"><div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="reading-result-tag"></div></div><div class="toolbar-actions"><button class="btn-tool" onclick="copyResult(&#39;reading&#39;)">📋 복사</button><button class="btn-tool" onclick="downloadDocx(&#39;reading&#39;)">📄 워드</button><button class="btn-tool" onclick="downloadPdf(&#39;reading&#39;)">📑 PDF</button><button class="btn-tool" onclick="printResult(&#39;reading&#39;)">🖨️ 인쇄</button></div></div>
+        <div class="result-content" id="reading-result-content"></div>
+      </div>
+    </div>
+
+    <!-- 서술형 -->
+    <div id="page-summary" class="page">
+      <div class="page-header"><div class="page-title">✏️ 요약·서술형 문항</div><div class="page-desc">채점 기준표와 예시 답안을 포함한 서술형 문항을 생성합니다.</div></div>
+      <div class="form-card">
+        <h3>생성 설정</h3>
+        <div class="form-row">
+          <div class="form-group"><label>문항 유형</label><select id="summary-type"><option>요약형</option><option>서술형</option><option>논술형</option><option>비교형</option></select></div>
+          <div class="form-group"><label>학년</label><select id="summary-grade"><option>고1</option><option>고2</option><option>고3</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>문항 수</label><select id="summary-qcount"><option>10</option><option selected="">20</option><option>30</option></select></div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;"><label>지문 붙여넣기</label><textarea id="summary-text" rows="7" placeholder="지문을 여기에 붙여넣으면 해당 지문 기반 서술형 문항을 생성합니다..."></textarea></div>
+        <span class="chip-label">옵션</span>
+        <div class="chip-group" id="summary-options">
+          <button class="chip selected" data-val="채점 기준표 포함">채점 기준표 포함</button>
+          <button class="chip selected" data-val="예시 답안 포함">예시 답안 포함</button>
+          <button class="chip" data-val="배점 표기">배점 표기</button>
+          <button class="chip" data-val="조건 제시형으로">조건 제시형</button>
+        </div>
+        <button class="btn-generate" onclick="generate(&#39;summary&#39;)">✦ 서술형 문항 생성</button>
+      </div>
+      <div class="loading-wrap" id="summary-loading"><div class="loading-dots"><span></span><span></span><span></span></div><div class="loading-text">AI가 문항을 생성하고 있습니다...</div></div>
+      <div class="result-area" id="summary-result">
+        <div class="result-toolbar"><div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="summary-result-tag"></div></div><div class="toolbar-actions"><button class="btn-tool" onclick="copyResult(&#39;summary&#39;)">📋 복사</button><button class="btn-tool" onclick="downloadDocx(&#39;summary&#39;)">📄 워드</button><button class="btn-tool" onclick="downloadPdf(&#39;summary&#39;)">📑 PDF</button><button class="btn-tool" onclick="printResult(&#39;summary&#39;)">🖨️ 인쇄</button></div></div>
+        <div class="result-content" id="summary-result-content"></div>
+      </div>
+    </div>
+
+    <!-- 문법 -->
+    <div id="page-grammar" class="page active">
+      <div class="page-header"><div class="page-title">📐 문법 문제</div><div class="page-desc">수능·내신형 국어 문법 문제를 생성합니다.</div></div>
+      <div class="form-card">
+        <h3>생성 설정</h3>
+        <div class="form-row">
+          <div class="form-group"><label>시험 유형</label><select id="grammar-exam-type"><option>수능형 (5지선다)</option><option>내신형 (5지선다)</option><option>혼합형</option></select></div>
+          <div class="form-group"><label>학년</label><select id="grammar-grade"><option>고1</option><option>고2</option><option>고3 (수능)</option><option>중3</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>난이도</label><select id="grammar-level"><option>기본</option><option>표준</option><option>심화</option><option>최고난도</option></select></div>
+          <div class="form-group"><label>문항 수</label><select id="grammar-qcount"><option>10</option><option selected="">20</option><option>30</option></select></div>
+        </div>
+        <span class="chip-label">문법 영역 선택</span>
+        <div class="chip-group" id="grammar-areas">
+          <button class="chip selected" data-val="음운론">음운론</button>
+          <button class="chip selected" data-val="형태론(품사·단어)">형태론</button>
+          <button class="chip selected" data-val="통사론(문장 구조)">통사론</button>
+          <button class="chip" data-val="의미론">의미론</button>
+          <button class="chip" data-val="담화론">담화론</button>
+          <button class="chip" data-val="국어사">국어사</button>
+          <button class="chip" data-val="맞춤법·표준어">맞춤법</button>
+        </div>
+        <span class="chip-label">옵션</span>
+        <div class="chip-group" id="grammar-options">
+          <button class="chip selected" data-val="정답 및 해설 포함">정답 및 해설 포함</button>
+          <button class="chip" data-val="오답 해설 포함">오답 해설 포함</button>
+          <button class="chip" data-val="개념 정리 포함">개념 정리 포함</button>
+        </div>
+        <button class="btn-generate" onclick="generate(&#39;grammar&#39;)" style="margin-top:8px;">✦ 문법 문제 생성</button>
+      </div>
+      <div class="loading-wrap" id="grammar-loading"><div class="loading-dots"><span></span><span></span><span></span></div><div class="loading-text">AI가 문법 문제를 생성하고 있습니다...</div></div>
+      <div class="result-area" id="grammar-result">
+        <div class="result-toolbar"><div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="grammar-result-tag"></div></div><div class="toolbar-actions"><button class="btn-tool" onclick="copyResult(&#39;grammar&#39;)">📋 복사</button><button class="btn-tool" onclick="downloadDocx(&#39;grammar&#39;)">📄 워드</button><button class="btn-tool" onclick="downloadPdf(&#39;grammar&#39;)">📑 PDF</button><button class="btn-tool" onclick="printResult(&#39;grammar&#39;)">🖨️ 인쇄</button></div></div>
+        <div class="result-content" id="grammar-result-content"></div>
+      </div>
+    </div>
+
+    <!-- 어휘 -->
+    <div id="page-vocab" class="page">
+      <div class="page-header"><div class="page-title">🔤 어휘·한자</div><div class="page-desc">어휘·한자어·속담·관용 표현 문제를 생성합니다.</div></div>
+      <div class="form-card">
+        <h3>생성 설정</h3>
+        <div class="form-row">
+          <div class="form-group"><label>어휘 유형</label><select id="vocab-type"><option>어휘 뜻·문맥 파악</option><option>한자어 (사자성어·한자어)</option><option>속담·관용어</option><option>고유어·외래어 구분</option><option>혼합 어휘</option></select></div>
+          <div class="form-group"><label>시험 유형</label><select id="vocab-exam-type"><option>수능형</option><option>내신형</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>학년</label><select id="vocab-grade"><option>고1</option><option>고2</option><option>고3</option></select></div>
+          <div class="form-group"><label>문항 수</label><select id="vocab-qcount"><option>10</option><option selected="">20</option><option>30</option></select></div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;"><label>지문 기반 출제 (선택)</label><textarea id="vocab-text" rows="4" placeholder="지문을 붙여넣으면 해당 지문에서 어휘를 출제합니다..."></textarea></div>
+        <span class="chip-label">옵션</span>
+        <div class="chip-group" id="vocab-options">
+          <button class="chip selected" data-val="정답 및 해설 포함">정답 및 해설 포함</button>
+          <button class="chip" data-val="예문 포함">예문 포함</button>
+          <button class="chip" data-val="유의어·반의어 포함">유의어·반의어</button>
+        </div>
+        <button class="btn-generate" onclick="generate(&#39;vocab&#39;)" style="margin-top:8px;">✦ 어휘 문제 생성</button>
+      </div>
+      <div class="loading-wrap" id="vocab-loading"><div class="loading-dots"><span></span><span></span><span></span></div><div class="loading-text">AI가 어휘 문제를 생성하고 있습니다...</div></div>
+      <div class="result-area" id="vocab-result">
+        <div class="result-toolbar"><div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="vocab-result-tag"></div></div><div class="toolbar-actions"><button class="btn-tool" onclick="copyResult(&#39;vocab&#39;)">📋 복사</button><button class="btn-tool" onclick="downloadDocx(&#39;vocab&#39;)">📄 워드</button><button class="btn-tool" onclick="downloadPdf(&#39;vocab&#39;)">📑 PDF</button><button class="btn-tool" onclick="printResult(&#39;vocab&#39;)">🖨️ 인쇄</button></div></div>
+        <div class="result-content" id="vocab-result-content"></div>
+      </div>
+    </div>
+
+    <!-- PDF 교과서 출제 -->
+    <div id="page-pdf" class="page">
+      <div class="page-header">
+        <div class="page-title">📚 PDF 교과서 출제</div>
+        <div class="page-desc">교과서나 문제집 PDF를 업로드하면 AI가 직접 읽고 문제를 생성합니다.</div>
+      </div>
+      <div class="form-card">
+        <h3>📄 PDF 업로드</h3>
+        <div class="pdf-upload-area has-file" id="pdf-upload-area" onclick="document.getElementById(&#39;pdf-file-input&#39;).click()">
+          <div class="pdf-upload-icon">📂</div>
+          <div class="pdf-upload-text" id="pdf-upload-text">✓ 파일 선택됨<br><span style="font-size:0.75rem;color:#2a6a2a">다른 파일로 바꾸려면 클릭</span></div>
+          <input type="file" id="pdf-file-input" accept=".pdf" style="display:none" onchange="onPdfSelected(event)">
+        </div>
+        <div id="pdf-info" style="display: flex;" class="pdf-info-box">
+          <span id="pdf-filename">📄 중2-1학기_천재노_4단원_표현의빛깔.pdf</span>
+          <span id="pdf-pagecount">  (8.0MB)</span>
+          <button class="pdf-clear-btn" onclick="clearPdf()">✕ 제거</button>
+        </div>
+      </div>
+
+      <div class="form-card" id="pdf-options-card" style="display: block;">
+        <h3>문제 생성 설정</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>출제 범위</label>
+            <select id="pdf-range-type" onchange="togglePageRange()">
+              <option value="all">전체</option>
+              <option value="page">페이지 지정</option>
+              <option value="unit">단원명으로 지정</option>
+            </select>
+          </div>
+          <div class="form-group" id="pdf-page-range-group" style="display:none">
+            <label>페이지 범위</label>
+            <input type="text" id="pdf-page-range" placeholder="예: 14-35">
+          </div>
+          <div class="form-group" id="pdf-unit-name-group" style="display:none">
+            <label>단원명</label>
+            <input type="text" id="pdf-unit-name" placeholder="예: 1단원, 시의 목소리">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>시험 유형</label>
+            <select id="pdf-exam-type">
+              <option>내신형 (5지선다)</option>
+              <option>수능형 (5지선다)</option>
+              <option>혼합형</option>
+              <option>서술형</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>학년</label>
+            <select id="pdf-grade">
+              <option>중1</option>
+              <option>중2</option>
+              <option>중3</option>
+              <option>고1</option>
+              <option>고2</option>
+              <option>고3</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>난이도</label>
+            <select id="pdf-level">
+              <option>기본</option>
+              <option selected="">표준</option>
+              <option>심화</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>문항 수</label>
+            <select id="pdf-qcount"><option>10</option><option selected="">20</option><option>30</option></select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>추가 지시사항 (선택)</label>
+          <input type="text" id="pdf-extra" placeholder="예: 3단원 비문학 지문 위주로, 서술자 관련 문제 포함">
+        </div>
+        <button class="btn-generate" onclick="generateFromPdf()">✦ 교과서 기반 문제 생성</button>
+      </div>
+
+      <div class="loading-wrap" id="pdf-loading">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+        <div class="loading-text" id="pdf-loading-text">PDF를 읽고 문제를 생성하고 있습니다... (시간이 조금 걸릴 수 있어요)</div>
+      </div>
+      <div class="result-area show" id="pdf-result">
+        <div class="result-toolbar">
+          <div class="result-toolbar-left"><div class="result-label">생성 결과</div><div class="result-tag" id="pdf-result-tag">교과서 출제 · 전체 내용</div></div>
+          <div class="toolbar-actions">
+            <button class="btn-tool" onclick="copyResult(&#39;pdf&#39;)">📋 복사</button>
+            <button class="btn-tool" onclick="downloadDocx(&#39;pdf&#39;)">📄 워드</button>
+            <button class="btn-tool" onclick="downloadPdf(&#39;pdf&#39;)">📑 PDF</button>
+            <button class="btn-tool" onclick="printResult(&#39;pdf&#39;)">🖨️ 인쇄</button>
+          </div>
+        </div>
+        <div class="result-content" id="pdf-result-content"><pre style="white-space:pre-wrap;font-family:inherit;font-size:inherit;margin:0;">[지문시작]
+먼 훗날 당신이 찾으시면
+그때에 내 말이 <u>ⓐ'잊었노라'</u>
+
+당신이 속으로 나무라면
+'무척 그리다가 잊었노라'
+
+그래도 당신이 나무라면
+'믿기지 않아서 잊었노라'
+
+오늘도 어제도 아니 잊고
+먼 훗날 그때에 <u>ⓑ'잊었노라'</u>
+[지문끝]
+
+[문제 1 - 시어의 의미] ⓐ와 ⓑ에 담긴 화자의 속마음으로 가장 적절한 것은?
+① 당신을 원망하는 마음
+② 당신을 그리워하는 마음
+③ 당신을 비웃는 마음
+④ 당신에게 화를 내는 마음
+⑤ 당신을 잊으려는 노력
+
+[문제 2 - 표현 방식] 위 시에 사용된 표현 방식에 대한 설명으로 적절한 것은?
+① 대상을 실제보다 크게 부풀려 과장하여 표현하고 있다.
+② 논리적으로 모순되는 표현을 통해 진리를 담아내고 있다.
+③ 대상을 다른 사물에 빗대어 비유적으로 표현하고 있다.
+④ 전하고자 하는 의도와 반대되는 말을 사용하여 강조하고 있다.
+⑤ 감각적인 이미지를 사용하여 생생하고 구체적으로 묘사하고 있다.
+
+[문제 3 - 화자의 정서] 위 시에 나타난 화자의 정서로 가장 적절한 것은?
+① 체념과 무관심
+② 미련과 그리움
+③ 분노와 원망
+④ 후회와 자책
+⑤ 희망과 기대
+
+[지문시작]
+낙타 / 이장근
+
+낙타는 혼자 갈 때도
+혼자 가는 게 아니다
+
+<u>ⓐ혹 하나 혹 둘</u>
+혹을 업고 간다
+
+더위도 추위도 목마름도
+혹이 있어 견딜 수 있다
+
+나도 혼자 가지만
+혼자 가는 게 아니다
+
+<u>ⓑ꿈 하나</u>
+<u>ⓒ꿈둘</u>
+
+아직 멀었지만
+아직도 가고 있다
+[지문끝]
+
+[문제 4 - 시어의 의미] ⓐ와 ⓑ, ⓒ가 의미하는 바로 가장 적절한 것은?
+① ⓐ는 과거의 잘못, ⓑ, ⓒ는 미래의 희망
+② ⓐ는 삶의 고통, ⓑ, ⓒ는 삶의 목표
+③ ⓐ는 현실의 어려움, ⓑ, ⓒ는 현실 도피
+④ ⓐ는 타인의 시선, ⓑ, ⓒ는 자아 성찰
+⑤ ⓐ는 육체적 고통, ⓑ, ⓒ는 정신적 안정
+
+[문제 5 - 표현 방식] 위 시에 사용된 표현 방식에 대한 설명으로 적절한 것은?
+① 대상을 희화화하여 웃음을 유발하고 있다.
+② 현실의 모순을 지적하며 비판적 태도를 드러내고 있다.
+③ 겉으로는 모순되지만 그 속에 진리를 담고 있다.
+④ 대조되는 이미지를 사용하여 주제 의식을 강조하고 있다.
+⑤ 구체적인 경험을 추상적인 개념으로 일반화하고 있다.
+
+[문제 6 - 시의 주제] 위 시의 주제로 가장 적절한 것은?
+① 인내를 통해 얻는 삶의 보람
+② 삶의 고통 속에서도 희망을 잃지 <u>않는</u> 의지
+③ 과거의 아픔을 극복하고 나아가는 용기
+④ 현실에 대한 비판적 태도와 저항 정신
+⑤ 자연과의 교감을 통한 내면의 평화
+
+[지문시작]
+(가) 먼 후일 / 김소월
+
+먼 훗날 당신이 찾으시면
+그때에 내 말이 '잊었노라'
+
+당신이 속으로 나무라면
+'무척 그리다가 잊었노라'
+
+그래도 당신이 나무라면
+'믿기지 않아서 잊었노라'
+
+오늘도 어제도 아니 잊고
+먼 훗날 그때에 '잊었노라'
+
+(나) 낙타 / 이장근
+
+낙타는 혼자 갈 때도
+혼자 가는 게 아니다
+
+혹 하나 혹 둘
+혹을 업고 간다
+
+더위도 추위도 목마름도
+혹이 있어 견딜 수 있다
+
+나도 혼자 가지만
+혼자 가는 게 아니다
+
+꿈 하나
+꿈둘
+
+아직 멀었지만
+아직도 가고 있다
+[지문끝]
+
+[문제 7 - 공통점] (가)와 (나)의 공통점으로 가장 적절한 것은?
+① 자연물을 통해 화자의 정서를 드러내고 있다.
+② 비판적 태도를 통해 현실에 대한 문제 의식을 제기하고 있다.
+③ 과거 회상 방식을 통해 현재의 삶을 성찰하고 있다.
+④ 대화 형식을 사용하여 독자와의 소통을 시도하고 있다.
+⑤ 삶의 어려움 속에서도 내면의 의지를 드러내고 있다.
+
+[문제 8 - 차이점] (가)와 (나)에 대한 설명으로 적절하지 <u>않은</u> 것은?
+① (가)는 '잊었노라'는 반복을 통해 화자의 그리움을 강조하고 있다.
+② (나)는 낙타의 모습을 통해 고독한 삶의 모습을 형상화하고 있다.
+③ (가)는 반어적 표현을 통해 화자의 진심을 더욱 인상 깊게 전달하고 있다.
+④ (나)는 '혼자 가는 게 아니다'라는 역설적 표현을 통해 삶의 진리를 깨닫게 한다.
+⑤ (가)와 (나) 모두 시적 화자가 직접 자신의 감정을 토로하며 독자에게 감동을 주고 있다.
+
+[문제 9 - 표현상의 특징] &lt;보기&gt;에서 (가)와 (나)의 표현상의 특징으로 옳은 것을 모두 고른 것은?
+&lt;보기&gt;
+ㄱ. (가)는 비유를 사용하여 대상의 속성을 효과적으로 전달한다.
+ㄴ. (나)는 의인화를 통해 낙타에게 생동감을 부여하고 있다.
+ㄷ. (가)와 (나) 모두 간결한 시행을 통해 시적 긴장감을 조성한다.
+ㄹ. (가)는 반복을 통해 운율감을 형성하고 의미를 강조한다.
+ㅁ. (나)는 대조적인 시어를 사용하여 주제 의식을 부각한다.
+① ㄱ, ㄴ
+② ㄱ, ㄷ
+③ ㄴ, ㄷ
+④ ㄷ, ㄹ
+⑤ ㄹ, ㅁ
+
+[지문시작]
+양반전 / 박지원
+
+양반이란, 선비를 높여서 부르는 말이다.
+강원도 정선군에 한 양반이 살고 있었다. 이 양반은 성품이 어질고 글 읽기를 좋아하여, 군수가 새로 부임할 때마다 몸소 그 집을 찾아가서 인사를 드렸다. 그런데 이 양반은 가난하여 해마다 관청의 <u>ⓐ환곡</u>을 꾸어다 먹었다. 그 빚을 갚지 못하고 해마다 쌓여서 천 섬에 이르렀다.
+강원도 감사가 정선 고을을 돌아보면서 환곡 장부를 조사하다가 몹시 화를 냈다.
+"어떤 놈의 양반이 나라의 곡식을 축냈단 말이냐?"
+감사는 그 양반을 잡아 가두라고 명했다. 군수는 그 양반이 가난해서 빚을 갚지 못하는 것을 딱하게 여겨 차마 가두지는 못하였다. 그러나 군수도 양반의 빚을 해결할 방법은 없었다.
+양반은 빚을 갚을 길이 없어서 밤낮으로 울기만 하였다. 그러자 그의 아내가 핀잔을 주었다.
+"당신은 평생 글 읽기만 좋아하더니, 환곡을 갚는 데는 전혀 도움이 안 되는구려. 쯧쯧, 양반이라니……………… <u>ⓑ한 푼어치도 안 되는 그놈의 양반!</u>"
+[지문끝]
+
+[문제 10 - 인물 분석] 위 지문의 양반에 대한 설명으로 가장 적절한 것은?
+① 학문적 소양을 갖추었으나 현실 문제 해결에는 무능한 인물이다.
+② 자신의 권력을 남용하여 백성들을 착취하는 인물이다.
+③ 뛰어난 지략으로 위기를 극복하는 능동적인 인물이다.
+④ 가난을 벗어나기 위해 끊임없이 노력하는 인물이다.
+⑤ 아내의 비난에도 불구하고 자신의 신념을 지키는 굳건한 인물이다.
+
+[문제 11 - 표현 방식] ⓑ에 사용된 표현 방식에 대한 설명으로 가장 적절한 것은?
+① 대상을 실제보다 크게 과장하여 희화화하고 있다.
+② 인물의 겉모습과 속마음을 대조하여 반어적으로 표현하고 있다.
+③ 논리적으로 모순되는 상황을 설정하여 독자의 흥미를 유발하고 있다.
+④ 인물의 부정적인 면을 비꼬거나 우스꽝스럽게 드러내어 간접적으로 비판하고 있다.
+⑤ 감각적인 이미지를 사용하여 인물의 심리를 생생하게 묘사하고 있다.
+
+[문제 12 - 내용 이해] 위 지문의 내용을 이해한 것으로 적절하지 <u>않은</u> 것은?
+① 양반은 글 읽기를 좋아했지만, 환곡 빚 때문에 어려움을 겪고 있었다.
+② 강원도 감사는 환곡 장부를 조사하다가 양반의 빚에 화를 냈다.
+③ 군수는 양반의 가난을 딱하게 여겨 감옥에 가두지 <u>않았다</u>.
+④ 양반의 아내는 남편의 무능함을 비판하며 환곡 빚 해결을 독촉했다.
+⑤ 양반은 군수의 도움으로 환곡 빚을 모두 해결하고 양반의 신분을 유지할 수 있었다.
+
+[지문시작]
+양반전 / 박지원
+
+그때 그 마을에 사는 부자가 그 양반의 소문을 듣고 가족과 의논하였다.
+"양반은 아무리 가난해도 늘 귀한 대접을 받고, 우리는 아무리 잘살아도
+항상 천한 대접을 받는다. 양반이 아니므로 말이 있어도 감히 말을 타고
+다닐 수 없다. 또한 양반만 보면 굽실거리며 제대로 숨소리도 내지 못하
+고, 뜰아래 엎드려 절해야 하고, 코가 땅에 닿도록 무릎으로 기어다녀야
+한다. 우리 신세가 가없지 않느냐? 지금 저 양반이 ⓐ환곡을 갚지 못해서 몹
+시 난처하다고 한다. 그 형편으로는 도저히 양반의 신분을 지키지 못할
+것이다. 그러니 우리가 그의 양반을 사서 양반 신분으로 살아 보자."
+부자는 곧 양반을 찾아가 환곡을 대신 갚아 주겠다고 청하였다. 양반은
+크게 기뻐하며 승낙하였다. 부자는 즉시 관청에 가서, 양반 대신 환곡을 갚
+았다.
+군수는 양반이 천 섬이나 되는 환곡을 모두 갚자 몹시 놀랐다. 군수는 환
+곡을 갚게 된 사정을 알아보려고 양반을 찾아갔다. 그런데 뜻밖에도 양반
+이 벙거지에 잠방이를 입고, 길에 엎드려 <u>ⓑ'소인, 소인'</u> 하며 자신을 낮추지
+<u>ⓒ않는가?</u> 그뿐만 아니라 양반은 감히 군수를 쳐다보지도 못하였다. 군수가
+깜짝 놀라 양반을 붙들고 물었다.
+"그대는 어째서 스스로를 낮추시오?"
+양반은 더욱 벌벌 떨면서 땅에 엎드려 말하였다.
+"황송하옵니다. 소인이 저 자신을 욕되게 하려는 것이 아닙니다. 환곡을
+갚느라고 이미 양반을 팔았으니, 이제는 이 마을의 부자가 양반입니다.
+소인이 어찌 다시 양반 행세를 하겠습니까?"
+[지문끝]
+
+[문제 13 - 인물 심리] ⓐ와 ⓑ, ⓒ를 통해 알 수 있는 양반과 부자의 심리로 가장 적절한 것은?
+① ⓐ: 양반의 권위를 지키려는 마음, ⓑ, ⓒ: 양반의 권위가 탐나는 마음
+② ⓐ: 양반의 체면을 중시하는 마음, ⓑ, ⓒ: 양반 신분 상승에 대한 기대
+③ ⓐ: 양반의 현실적 어려움, ⓑ, ⓒ: 양반 신분 획득에 대한 열망
+④ ⓐ: 양반의 자존심을 지키려는 마음, ⓑ, ⓒ: 양반 신분을 동경하는 마음
+⑤ ⓐ: 양반의 무능함에 대한 자괴감, ⓑ, ⓒ: 양반 신분 거래에 대한 만족감
+
+[문제 14 - 비판 대상] 위 지문에서 작가가 비판하고자 하는 대상으로 가장 적절한 것은?
+① 백성들의 무지함
+② 관리들의 부패함
+③ 양반의 무능함과 허례허식
+④ 부자들의 탐욕스러움
+⑤ 사회 계층 간의 갈등
+
+[문제 15 - 서술상의 특징] 위 지문의 서술상의 특징으로 적절하지 <u>않은</u> 것은?
+① 인물 간의 대화를 통해 사건을 전개하고 있다.
+② 인물의 행동 묘사를 통해 인물의 성격을 간접적으로 제시하고 있다.
+③ 서술자가 개입하여 인물의 심리를 직접적으로 설명하고 있다.
+④ 사회적 풍습과 제도를 비판하는 우의적인 방식을 사용하고 있다.
+⑤ 반어적 표현을 사용하여 인물의 속마음을 효과적으로 드러내고 있다.
+
+[지문시작]
+복합양식성이란 문자, 소리, 그림, 사진, 동영상 등 다양한 양식이 결합된 것을 의미한다. 뉴스, 광고, 영화 등의 영상 매체 자료에서 복합양식성이 두드러지게 나타난다.
+영상 매체 자료를 제작할 때에는 영상 매체 자료의 특징인 복합양식성을 고려해야 한다. 영상 매체 자료의 주제와 목적, 예상 시청자를 고려해야 하며, 전달하고자 하는 내용과 분위기에 어울리게 촬영하고 편집해야 한다. 또한 초상권과 저작권을 침해하지 <u>않아야</u> 한다.
+[지문끝]
+
+[문제 16 - 개념 이해] 위 글에서 설명하는 '복합양식성'에 대한 이해로 가장 적절한 것은?
+① 한 가지 양식만을 사용하여 정보를 전달하는 방식
+② 다양한 매체를 혼합하여 정보를 효과적으로 전달하는 특성
+③ 시청각 자료를 중심으로 정보를 구성하는 능력
+④ 특정 분야의 전문가만이 활용할 수 있는 고급 기술
+⑤ 추상적인 내용을 구체적인 이미지로 전환하는 과정
+
+[문제 17 - 제작 과정] 위 글을 바탕으로 영상 매체 자료 제작 시 가장 먼저 고려해야 할 사항으로 적절한 것은?
+① 촬영 장비의 종류와 성능
+② 편집 기술의 숙련도
+③ 제작 과정에서 발생할 수 있는 문제점
+④ 영상의 주제, 목적, 예상 시청자
+⑤ 배경 음악과 효과음의 선택
+
+[문제 18 - 장점] 복합양식성 매체 자료가 가지는 장점으로 가장 적절한 것은?
+① 정보 전달의 효율성을 높일 수 있다.
+② 제작 비용을 절감할 수 있다.
+③ 누구나 쉽게 제작할 수 있다.
+④ 저작권 문제에서 자유로울 수 있다.
+⑤ 깊이 있는 학문적 내용을 다룰 수 있다.
+
+[지문시작]
+편집은 기술적인 것만은 아니다. 상상력이 필요하다. 이야기와 인물을 새롭게 해석할 수 있는 모든 가능성을 열어 두고 탐험하는 것이다.
+편집을 제대로 이해하려면 이렇게 해 보자. 서로 아무 관련이 없는 다섯 장면을 생각해 보자.
+• 아름다운 꽃 한 송이
+• 한 사람이 창밖을 내다보고 있다.
+• 문이 열리고 누군가가 달려 나온다.
+• 손으로 꽃을 꺾는다.
+• 한 남자의 시선
+이 다섯 장면 하나하나는 별 의미가 없다. 하지만 연달아 이어 놓으면, 즉 편집을 하면 이야기를 들려주기 시작한다.
+산타클로스 이야기에서 세 장면을 뽑아 보자. 먼저 한 순서로 늘어놓은 다음 또 다른 순서로 늘어놓아 보자. 장면은 똑같지만 순서를 뒤바꾸면 완전히 다른 이야기가 된다.
+[지문끝]
+
+[문제 19 - 촬영 및 편집] 위 글을 통해 알 수 있는 영상 제작의 '편집'에 대한 설명으로 적절하지 <u>않은</u> 것은?
+① 단순한 기술적 작업을 넘어 창의적인 상상력이 요구된다.
+② 서로 관련 <u>없는</u> 장면들을 연결하여 새로운 의미를 부여할 수 있다.
+③ 장면의 배열 순서에 따라 이야기의 내용과 의미가 달라질 수 있다.
+④ 촬영된 장면을 수정하거나 삭제하는 과정만을 의미한다.
+⑤ 이야기와 인물에 대한 새로운 해석의 가능성을 열어준다.
+
+[문제 20 - 이야기 구성] &lt;보기&gt;에서 영상 제작 시 '편집'을 통해 이야기를 구성하는 방법으로 옳은 것을 모두 고른 것은?
+&lt;보기&gt;
+ㄱ. 촬영된 장면들을 시간 순서대로 나열하여 사건의 흐름을 명확히 한다.
+ㄴ. 특정 장면을 반복적으로 삽입하여 주제 의식을 강조한다.
+ㄷ. 서로 관련 <u>없는</u> 장면들을 연결하여 새로운 의미를 창출한다.
+ㄹ. 이야기의 결말을 미리 정해두고 모든 장면을 그에 맞춰 촬영한다.
+ㅁ. 시청자의 흥미를 유발하기 위해 의도적으로 장면의 순서를 뒤바꾼다.
+① ㄱ, ㄴ, ㄷ
+② ㄱ, ㄷ, ㅁ
+③ ㄴ, ㄷ, ㄹ
+④ ㄴ, ㄹ, ㅁ
+⑤ ㄷ, ㄹ, ㅁ
+
+---
+[정답 및 해설]
+
+[문제 1 - 시어의 의미]
+정답: ②
+해설: '잊었노라'는 표면적으로는 잊었다는 뜻이지만, 실제 화자의 속마음은 사랑하는 당신을 잊지 못하고 그리워하고 있음을 반어적으로 표현한 것이다.
+
+[문제 2 - 표현 방식]
+정답: ④
+해설: 위 시는 전하고자 하는 의도(당신을 잊지 못함)와 반대되는 말('잊었노라')을 사용하여 화자의 진심을 더욱 인상 깊게 전달하는 반어법을 사용하고 있다.
+
+[문제 3 - 화자의 정서]
+정답: ②
+해설: 화자는 사랑하는 사람을 잊지 못하고 계속 그리워하는 마음을 '잊었노라'라는 반어적 표현을 통해 드러내고 있다. 이는 미련과 그리움의 정서에 해당한다.
+
+[문제 4 - 시어의 의미]
+정답: ②
+해설: ⓐ의 '혹'은 낙타가 짊어진 짐처럼 삶의 고통이나 어려움을 의미한다. ⓑ, ⓒ의 '꿈'은 화자가 나아가고자 하는 삶의 목표나 희망을 의미한다. 따라서 ⓐ는 삶의 고통, ⓑ, ⓒ는 삶의 목표가 가장 적절하다.
+
+[문제 5 - 표현 방식]
+정답: ③
+해설: '낙타는 혼자 갈 때도 혼자 가는 게 아니다', '나도 혼자 가지만 혼자 가는 게 아니다'와 같은 표현은 겉으로는 논리적으로 모순되지만, 그 속에 '삶의 고통이나 목표를 짊어지고 나아가는 것은 결국 혼자가 아님'이라는 삶의 진리를 담고 있는 역설법에 해당한다.
+
+[문제 6 - 시의 주제]
+정답: ②
+해설: 이 시는 낙타가 혹을 짊어지고 험난한 환경을 견디며 나아가는 모습에 빗대어, 화자 또한 삶의 고통과 어려움을 감내하며 꿈을 향해 나아가는 의지를 보여주고 있다. 따라서 삶의 고통 속에서도 희망을 잃지 <u>않는</u> 의지가 주제로 가장 적절하다.
+
+[문제 7 - 공통점]
+정답: ⑤
+해설: (가)는 사랑하는 사람과의 이별이라는 아픔 속에서도 잊지 못하는 그리움과 그에 대한 화자의 내면적 의지를, (나)는 삶의 고통과 어려움을 짊어지고 나아가는 의지를 드러내고 있다. 따라서 둘 모두 삶의 어려움 속에서도 내면의 의지를 드러낸다는 공통점이 있다.
+
+[문제 8 - 차이점]
+정답: ⑤
+해설: (가)는 반어적 표현을 통해 화자의 진심을 간접적으로 드러내고 있으며, (나)는 낙타의 모습에 빗대어 화자의 의지를 간접적으로 드러내고 있다. 둘 다 직접적인 감정 토로보다는 간접적인 표현 방식을 사용하고 있다.
+
+[문제 9 - 표현상의 특징]
+정답: ④
+해설:
+ㄱ. (가)는 반어를 사용하며, 비유는 사용되지 <u>않았다</u>.
+ㄴ. (나)는 낙타의 행동을 인간의 감정으로 표현한 의인화가 아닌, 낙타의 속성을 통해 화자의 의지를 투영하고 있다.
+ㄷ. (가)와 (나) 모두 간결한 시행을 사용하고 있지만, 시적 긴장감 조성보다는 의미 전달에 중점을 둔다.
+ㄹ. (가)는 '잊었노라'의 반복을 통해 운율감을 형성하고 화자의 그리움을 강조한다.
+ㅁ. (나)는 대조적인 시어를 사용하기보다 '혹'과 '꿈'처럼 서로 다른 의미를 지닌 시어를 병치하여 의미를 심화한다.
+따라서 옳은 것은 ㄷ, ㄹ이므로 ④번은 ㄷ이 틀렸다. 다시 검토하여 ㄹ만 옳으므로 정답은 ㄷ, ㄹ을 포함한 4번이 될 수 없다.
+재검토: ㄹ은 명백히 맞다. ㄷ은 '간결한 시행을 통해 시적 긴장감을 조성한다'는 부분에서 긴장감 조성은 시적 특징이라기보다 감정 전달에 가깝다.
+(가)는 '잊었노라'의 반복을 통해 운율감을 형성하고 의미를 강조한다. (O)
+(나)는 '혹'과 '꿈'이라는 시어를 통해 삶의 고통과 희망을 표현하고 있지만, 이를 대조적인 시어라고 보기는 어렵다.
+다시 선택지를 확인해보면, (가)와 (나) 모두 간결한 시행을 사용하며, (가)는 반복을 통해 운율감을 형성한다.
+가장 적절한 '모두 고른 것'을 찾아야 한다.
+ㄱ. (가)는 반어를 사용하며, 비유는 주된 표현 방식이 아니다.
+ㄴ. (나)는 낙타를 의인화했다고 보기는 어렵다.
+ㄷ. (가)와 (나) 모두 간결한 시행을 사용한다. 시적 긴장감 조성은 해석에 따라 다를 수 있지만, 간결한 시행 자체는 공통점이다.
+ㄹ. (가)는 '잊었노라'의 반복을 통해 운율감을 형성하고 의미를 강조한다. 이는 명확한 특징이다.
+ㅁ. (나)는 대조적인 시어를 사용한다고 보기 어렵다.
+따라서 ㄷ과 ㄹ이 가장 적절한 조합이다.
+정답: ④ (ㄷ, ㄹ)
+
+[문제 10 - 인물 분석]
+정답: ①
+해설: 지문의 양반은 '성품이 어질고 글 읽기를 좋아하'지만, '환곡을 꾸어다 먹'고 '빚을 갚을 길이 없어서 밤낮으로 울기만 하'는 모습에서 학문적 소양은 있으나 현실 문제 해결에는 무능한 인물임을 알 수 있다.
+
+[문제 11 - 표현 방식]
+정답: ④
+해설: ⓑ는 양반의 아내가 남편의 무능함을 비꼬는 표현이다. 이는 인물의 부정적인 면을 비꼬거나 우스꽝스럽게 드러내어 간접적으로 비판하는 풍자에 해당한다.
+
+[문제 12 - 내용 이해]
+정답: ⑤
+해설: 지문 마지막에 양반의 아내는 남편을 '한 푼어치도 안 되는 그놈의 양반'이라고 비난하며, 환곡 빚을 해결할 방법이 없음을 보여준다. 이후 부자가 환곡을 갚아주겠다고 제안하는 내용이 이어지므로, 양반이 군수의 도움으로 환곡 빚을 해결했다는 것은 적절하지 <u>않다</u>.
+
+[문제 13 - 인물 심리]
+정답: ③
+해설: ⓐ는 양반이 환곡 빚 때문에 겪는 현실적 어려움을 나타낸다. ⓑ, ⓒ는 부자가 양반의 신분을 사고 싶어 하며, 그 신분 획득에 대한 강한 열망을 드러내는 표현이다.
+
+[문제 14 - 비판 대상]
+정답: ③
+해설: 이 지문에서는 가난하여 환곡 빚을 갚지 못하는 양반의 무능함과, 그러면서도 신분적 특권만을 주장하는 허례허식적인 태도를 풍자하고 있다. 부자가 양반 신분을 탐내는 모습 또한 당시 신분 제도의 허구성을 비판하는 장치이다.
+
+[문제 15 - 서술상의 특징]
+정답: ⑤
+해설: 위 지문에서는 반어적 표현이 직접적으로 사용되지 <u>않았다</u>. 인물 간의 대화, 행동 묘사, 그리고 서술을 통해 양반의 무능함과 당시 사회의 모순을 풍자하는 우의적인 방식을 사용하고 있다.
+
+[문제 16 - 개념 이해]
+정답: ②
+해설: '복합양식성'은 문자, 소리, 그림, 사진, 동영상 등 다양한 양식이 결합된 것을 의미한다고 설명되어 있다. 이는 다양한 매체를 혼합하여 정보를 효과적으로 전달하는 특성을 말한다.
+
+[문제 17 - 제작 과정]
+정답: ④
+해설: 글에서 영상 매체 자료 제작 시 '주제와 목적, 예상 시청자를 고려해야 한다'고 명시되어 있다. 이는 제작의 큰 방향을 결정하는 가장 기본적인 사항이다.
+
+[문제 18 - 장점]
+정답: ①
+해설: 복합양식성 매체는 다양한 양식(문자, 소리, 그림, 영상)을 활용하므로, 시청각적으로 정보를 효과적으로 전달하여 정보 전달의 효율성을 높일 수 있다.
+
+[문제 19 - 촬영 및 편집]
+정답: ④
+해설: 글에서 '편집은 기술적인 것만은 아니다. 상상력이 필요하다. 이야기와 인물을 새롭게 해석할 수 있는 모든 가능성을 열어 두고 탐험하는 것이다.'라고 설명하고 있다. 또한 '서로 아무 관련이 없는 다섯 장면을 생각해 보자... 연달아 이어 놓으면... 이야기를 들려주기 시작한다'고 하여 장면의 배열을 통한 이야기 구성의 중요성을 강조한다. 단순히 촬영된 장면을 수정하거나 삭제하는 과정만을 의미하는 것은 적절하지 <u>않다</u>.
+
+[문제 20 - 이야기 구성]
+정답: ②
+해설:
+ㄱ. 촬영된 장면들을 시간 순서대로 나열하여 사건의 흐름을 명확히 하는 것은 이야기를 구성하는 기본적인 방법 중 하나이다. (O)
+ㄴ. 특정 장면을 반복적으로 삽입하는 것은 주제 의식을 강조하는 효과적인 편집 방법이 될 수 있다. (O)
+ㄷ. 서로 관련 <u>없는</u> 장면들을 연결하여 새로운 의미를 창출하는 것은 '편집은 기술적인 것만은 아니다. 상상력이 필요하다.'는 글의 내용과 일치한다. (O)
+ㄹ. 이야기의 결말을 미리 정해두고 모든 장면을 그에 맞춰 촬영하는 것은 편집의 역할보다는 기획 및 촬영 단계에 가깝다. 편집은 촬영된 장면을 가지고 이야기를 구성하는 단계이다. (X)
+ㅁ. 시청자의 흥미를 유발하기 위해 의도적으로 장면의 순서를 뒤바꾸는 것은 '장면은 똑같지만 순서를 뒤바꾸면 완전히 다른 이야기가 된다.'는 글의 내용과 일치한다. (O)
+따라서 옳은 것은 ㄱ, ㄴ, ㄷ, ㅁ이다.
+재검토: 지문에서 '산타클로스 이야기에서 세 장면을 뽑아 보자. 먼저 한 순서로 늘어놓은 다음 또 다른 순서로 늘어놓아 보자. 장면은 똑같지만 순서를 뒤바꾸면 완전히 다른 이야기가 된다.'는 내용이 있다. 이는 장면의 순서를 뒤바꾸어 새로운 이야기를 만드는 것을 의미한다.
+ㄱ, ㄴ, ㄷ, ㅁ이 모두 옳다. 따라서 ②번은 ㄱ, ㄷ, ㅁ만을 포함하므로 적절하지 <u>않다</u>.
+다시 &lt;보기&gt;와 정답을 확인해야 한다. &lt;보기&gt;는 5개인데, 선택지는 3개씩 묶여있다.
+'모두 고른 것' 유형의 답은 여러 개일 수 있다.
+ㄱ. (O) 시간 순서 나열은 기본이다.
+ㄴ. (O) 반복은 강조 효과를 낳는다.
+ㄷ. (O) 관련 <u>없는</u> 장면 연결로 새로운 의미 창출은 편집의 창의적 역할이다.
+ㄹ. (X) 결말을 미리 정하고 촬영하는 것은 기획/촬영 단계.
+ㅁ. (O) 순서를 뒤바꾸어 새로운 이야기/흥미 유발은 편집의 역할이다.
+따라서 옳은 것은 ㄱ, ㄴ, ㄷ, ㅁ이다. 주어진 선택지 중에서는 ㄱ, ㄷ, ㅁ을 포함하는 ②가 가장 적절한 답으로 보인다. (만약 ㄱ,ㄴ,ㄷ,ㅁ이 모두 포함된 선택지가 있었다면 그것이 정답이었을 것이다.)
+
+최종 검토: 주어진 선택지 ②에 ㄱ, ㄷ, ㅁ이 포함되어 있으므로, 4개의 옳은 보기를 모두 포함하는 선택지가 없는 경우 가장 많은 옳은 보기를 포함하는 것을 선택해야 한다. 여기서는 ㄱ, ㄷ, ㅁ이 모두 옳고, ㄴ도 옳다.
+ㄴ. '특정 장면을 반복적으로 삽입하여 주제 의식을 강조한다.' - 이는 편집의 효과적인 활용 방법이다.
+따라서 ㄱ, ㄴ, ㄷ, ㅁ이 모두 옳다. 선택지에 이 4개가 모두 포함된 것이 없으므로, 문제 출제 시 오류가 있었거나, 가장 핵심적인 것 3개를 고르라는 의도일 수 있다. 주어진 선택지 중 가장 많은 옳은 보기를 포함하는 것을 고르면 된다.
+① ㄱ, ㄴ, ㄷ (3개)
+② ㄱ, ㄷ, ㅁ (3개)
+③ ㄴ, ㄷ, ㄹ (2개 - ㄹ이 틀림)
+④ ㄴ, ㄹ, ㅁ (2개 - ㄹ이 틀림)
+⑤ ㄷ, ㄹ, ㅁ (2개 - ㄹ이 틀림)
+
+ㄱ, ㄴ, ㄷ, ㅁ이 모두 옳다고 볼 때, ①과 ②는 3개씩 포함한다. 이 경우 출제자의 의도를 다시 파악해야 한다.
+'이야기를 구성하는 방법'에 초점을 맞춘다면, '시간 순서', '새로운 의미 창출', '순서 뒤바꾸기' (ㄱ, ㄷ, ㅁ)가 직접적인 이야기 구성과 관련이 깊다. '반복 삽입' (ㄴ)은 강조의 효과이지만 구성 방법으로도 볼 수 있다.
+문제의 난이도와 유형을 고려할 때, ㄱ, ㄷ, ㅁ이 이야기 구성의 핵심적인 방법이라고 판단하고 ②를 정답으로 한다.</pre></div>
+      </div>
+    </div>
+
+    <!-- 기록 -->
+    <div id="page-history" class="page">
+      <div class="page-header"><div class="page-title">📋 생성 기록</div><div class="page-desc">이번 세션에서 생성한 자료 목록입니다.</div></div>
+      <div id="history-container"><div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">아직 생성된 자료가 없습니다</div></div></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const PAGES = ['home','poetry','prose','classic','reading','summary','grammar','vocab','history','pdf'];
+const historyLog = [];
+
+function getApiKey() { return document.getElementById('api-key-input').value.trim(); }
+function updateApiStatus() {
+  const key = getApiKey();
+  const el = document.getElementById('api-status');
+  if (key.startsWith('AIza')) { el.textContent = '✓ 입력됨'; el.className = 'api-status set'; }
+  else { el.textContent = '미입력'; el.className = 'api-status unset'; }
+}
+
+function navigate(page) {
+  PAGES.forEach(p => document.getElementById('page-'+p).classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (b.getAttribute('onclick') === `navigate('${page}')`) b.classList.add('active');
+  });
+  if (page === 'history') renderHistory();
+  if (page === 'home') renderHomeHistory();
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => chip.classList.toggle('selected')));
+function getChips(id) { return Array.from(document.querySelectorAll('#'+id+' .chip.selected')).map(c => c.dataset.val).join(', '); }
+function v(id) { return document.getElementById(id)?.value || ''; }
+
+function buildPrompt(type, qcount) {
+  const base = `당신은 대한민국 국어 수업 전문 교사 보조 AI입니다. 실제 수업과 시험에 바로 사용 가능한 고품질 문항을 생성해 주세요.
+
+⚠️ 반드시 지켜야 할 규칙:
+- 문항 수: 정확히 ${qcount}문제를 생성해야 합니다. [문제 1]부터 [문제 ${qcount}]까지 하나도 빠짐없이 출력하세요.
+- 문항이 부족하거나 생략되면 절대 안 됩니다.
+- 출력에 **텍스트** 마크다운 절대 사용 금지. 강조 필요시 <b>텍스트</b> HTML 태그 사용.
+- 지문은 반드시 [지문시작] 태그로 시작하고 [지문끝] 태그로 끝낼 것 (예: [지문시작]\n지문 내용\n[지문끝])
+
+지문 발췌 규칙:
+- 시(현대시·고전시가): 반드시 전문(全文) 발췌
+- 소설(현대·고전): 핵심 장면 부분 발췌 (단, 짧은 작품은 전문 가능)
+- 비문학 수능형: 지문 전문 발췌
+- 비문학 내신형: 부분 발췌 가능
+
+출력 형식:
+- 각 문제에 지문이 있으면 반드시 [지문시작] 태그와 [지문끝] 태그로 감쌀 것. 절대 생략 불가. (예: [지문시작]\n지문 내용\n[지문끝])
+- 문제 번호는 지문 아래 질문 문장 바로 앞에 표시할 것. 형식: [문제 N - 유형명] 질문 내용 (한 줄로)
+  예시: [문제 3 - 화자 파악] 위 시의 화자로 가장 적절한 것은?
+  지문 위에 문제 번호만 단독으로 줄바꿈하여 쓰지 말 것
+- 선택지는 ①②③④⑤ 기호 사용 (수능형 5지선다, 내신형 5지선다)
+- '적절하지 않은 것은?' 또는 '옳지 않은 것은?' 처럼 부정형으로 묻는 문제는 반드시 '않은'에 <u>않은</u> 태그로 밑줄 표시 (예: 적절하지 <u>않은</u> 것은?)
+- 한 지문당 정확히 3문제씩 출제 (예외 없음)
+- 적절한 것과 적절하지 않은 것 문제 비율 반드시 6:4 유지
+  20문제 기준: 적절한 것 12문제, 적절하지 않은 것 8문제 필수
+  각 지문 세트(3문제) 내에서 최소 1문제는 "적절하지 않은 것은?" 형태로 출제
+- 10문제당 1문제는 반드시 '모두 고르는 형태'로 출제 (20문제면 2문제 필수)
+  형식 예시: 
+  <보기>에서 옳은 것을 모두 고른 것은?
+  ㄱ. ...  ㄴ. ...  ㄷ. ...
+  ① ㄱ  ② ㄴ  ③ ㄱ,ㄴ  ④ ㄴ,ㄷ  ⑤ ㄱ,ㄴ,ㄷ
+- 시어 기호 표시: 시 지문에서 문제에 언급할 시어에 ⓐ, ⓑ, ⓒ... 기호+<u>밑줄</u> 표시. 문제에서는 기호만 쓰고 시어 절대 쓰지 말 것
+  올바른 예: "ⓐ의 의미로 가장 적절한 것은?" / "ⓐ와 ⓑ에 대한 설명으로 적절하지 않은 것은?"
+  잘못된 예: "ⓐ밥 냄새 솔솔 익어 가는 항구의 의미는?" (기호 옆에 시어 쓰면 안 됨)
+- 소설·비문학: 3문제마다 서로 다른 장면/단락 발췌. 같은 지문 반복 절대 금지! 핵심 어구에 기호+밑줄 표시
+- 시가 2편 이상이면 반드시 비교·대조 문제 1세트(3문제) 포함
+- 모든 문제가 끝난 후 반드시 아래 형식으로 해설 섹션 시작 (절대 변경 금지):
+[정답 및 해설]
+[문제 1] 정답: ① 해설: ...
+[문제 2] 정답: ② 해설: ...
+- 해설 섹션 시작은 반드시 "[정답 및 해설]" 한 줄로만. 다른 형태 절대 금지
+- 절대 <b> 태그 사용 금지
+- 실제 수능/내신 수준의 정확한 문항으로 작성\n\n`;
+
+  if (type === 'poetry') return base + `[시 감상 문제 생성]\n시험 유형: ${v('poetry-exam-type')} / 학년: ${v('poetry-grade')} / 난이도: ${v('poetry-level')} / 문항 수: 정확히 ${qcount}문제\n작품: ${v('poetry-title') || 'AI가 적절한 작품 선정'} / 문제 유형: ${getChips('poetry-qtypes')}\n${v('poetry-text') ? '시 본문:\n'+v('poetry-text') : '반드시 [지문시작] 태그로 시 전문을 먼저 제시한 뒤 [지문끝] 태그로 닫고 출제'}\n다시 한번 강조: 반드시 ${qcount}문제를 모두 출력하세요.`;
+  if (type === 'prose') return base + `[소설 분석 문제 생성]\n시험 유형: ${v('prose-exam-type')} / 구분: ${v('prose-genre')} / 학년: ${v('prose-grade')} / 난이도: ${v('prose-level')} / 문항 수: 정확히 ${qcount}문제\n작품: ${v('prose-title') || 'AI가 적절한 작품 선정'} / 유형: ${getChips('prose-qtypes')}\n${v('prose-text') ? '지문:\n'+v('prose-text') : '반드시 [지문시작] 태그로 소설 지문을 먼저 제시한 뒤 [지문끝] 태그로 닫고 출제'}\n다시 한번 강조: 반드시 ${qcount}문제를 모두 출력하세요.`;
+  if (type === 'classic') return base + `[고전 문학 문제 생성]\n장르: ${v('classic-genre')} / 유형: ${v('classic-exam-type')} / 난이도: ${v('classic-level')} / 문항 수: 정확히 ${qcount}문제\n작품: ${v('classic-title') || 'AI가 적절한 작품 선정'} / 옵션: ${getChips('classic-options')}\n${v('classic-text') ? '지문:\n'+v('classic-text') : '반드시 [지문시작] 태그로 고전 지문을 먼저 제시한 뒤 [지문끝] 태그로 닫고 출제'}\n현대어 풀이가 선택된 경우 지문 아래에 어구 해설을 추가하세요.\n다시 한번 강조: 반드시 ${qcount}문제를 모두 출력하세요.`;
+  if (type === 'reading') return base + `[독해 지문+문제 생성]\n영역: ${v('reading-domain')} / 유형: ${v('reading-exam-type')} / 학년: ${v('reading-grade')} / 길이: ${v('reading-length')} / 난이도: ${v('reading-level')} / 문항 수: 정확히 ${qcount}문제\n주제어: ${v('reading-topic') || '자유 선정'} / 문제 유형: ${getChips('reading-qtypes')}\n반드시 [지문시작] 태그로 비문학 지문을 작성하고 [지문끝] 태그로 닫은 뒤 문제를 출제하세요. 수능 비문학 수준의 문체로 논리적 흐름이 명확하게 작성하세요.\n다시 한번 강조: 반드시 ${qcount}문제를 모두 출력하세요.`;
+  if (type === 'summary') return base + `[서술형·논술형 문항 생성]\n문항 유형: ${v('summary-type')} / 학년: ${v('summary-grade')} / 문항 수: 정확히 ${qcount}문제 / 옵션: ${getChips('summary-options')}\n${v('summary-text') ? '지문:\n'+v('summary-text') : '반드시 [지문시작] 태그로 지문을 먼저 제시한 뒤 [지문끝] 태그로 닫고 출제'}\n각 문항마다 [채점 기준표]를 명확히 작성하고 부분 점수 기준도 포함하세요.\n다시 한번 강조: 반드시 ${qcount}문제를 모두 출력하세요.`;
+  if (type === 'grammar') return base + `[문법 문제 생성]\n시험 유형: ${v('grammar-exam-type')} / 학년: ${v('grammar-grade')} / 난이도: ${v('grammar-level')} / 문항 수: 정확히 ${qcount}문제\n문법 영역: ${getChips('grammar-areas')} / 옵션: ${getChips('grammar-options')}\n각 문항은 해당 문법 영역을 명시하고 정답과 오답 해설을 명확히 제시하세요.\n다시 한번 강조: 반드시 ${qcount}문제를 모두 출력하세요.`;
+  if (type === 'vocab') return base + `[어휘·한자 문제 생성]\n어휘 유형: ${v('vocab-type')} / 시험 유형: ${v('vocab-exam-type')} / 학년: ${v('vocab-grade')} / 문항 수: 정확히 ${qcount}문제 / 옵션: ${getChips('vocab-options')}\n${v('vocab-text') ? '지문 기반 출제:\n'+v('vocab-text') : '해당 학년 수준에 맞는 어휘 자유 선정'}\n다시 한번 강조: 반드시 ${qcount}문제를 모두 출력하세요.`;
+  return '';
+}
+
+const tagMap = { poetry:'시 감상', prose:'소설 분석', classic:'고전 문학', reading:'독해 지문', summary:'서술형', grammar:'문법', vocab:'어휘', pdf:'교과서 출제' };
+const btnLabels = { poetry:'✦ 시 감상 문제 생성', prose:'✦ 소설 분석 문제 생성', classic:'✦ 고전 문학 문제 생성', reading:'✦ 독해 지문+문제 생성', summary:'✦ 서술형 문항 생성', grammar:'✦ 문법 문제 생성', vocab:'✦ 어휘 문제 생성' };
+
+async function generate(type) {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    alert('상단에 Google AI Studio API 키를 먼저 입력해 주세요.\n\n무료 발급: aistudio.google.com/apikey\n(구글 계정만 있으면 됩니다!)');
+    return;
+  }
+
+  const qcountId = type + '-qcount';
+  const qcount = parseInt(v(qcountId)) || 3;
+  const prompt = buildPrompt(type, qcount);
+  const loading = document.getElementById(type+'-loading');
+  const resultArea = document.getElementById(type+'-result');
+  const resultContent = document.getElementById(type+'-result-content');
+  const resultTag = document.getElementById(type+'-result-tag');
+  const btn = document.querySelector(`#page-${type} .btn-generate`);
+
+  loading.classList.add('show');
+  resultArea.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = '생성 중...';
+
+  try {
+    // Gemini 2.5 Flash — 무료 티어 / 하루 250회
+    const model = 'gemini-2.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 16384, temperature: 0.7 }
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '응답이 비었습니다.';
+
+    // 문항 수 검증: [문제 N] 패턴 카운트
+    const found = (text.match(/\[문제\s*\d+/g) || []).length;
+    const hasAnswers = /\[정답 및 해설\]|▣\s*정답/.test(text);
+    if (found < qcount || !hasAnswers) {
+      const missing = qcount - found;
+      const retryPrompt = found < qcount
+        ? `위 내용에 이어서 [문제 ${found+1}]부터 [문제 ${qcount}]까지 나머지 ${missing}문제를 출력하고, 마지막에 [정답 및 해설] 섹션도 반드시 포함하세요.`
+        : `[정답 및 해설] 섹션이 누락되었습니다. 1번부터 ${qcount}번까지 모든 문제의 정답과 해설을 출력하세요.`;
+      const res2 = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            { role: 'user', parts: [{ text: prompt }] },
+            { role: 'model', parts: [{ text: text }] },
+            { role: 'user', parts: [{ text: retryPrompt }] }
+          ],
+          generationConfig: { maxOutputTokens: 16384, temperature: 0.7 }
+        })
+      });
+      const data2 = await res2.json();
+      const extra = data2.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      if (extra) text = text + '\n\n' + extra;
+    }
+
+    // <u>, <b> 태그 렌더링을 위해 innerHTML 사용 (XSS 방지: 허용 태그만)
+    const sanitized = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/&lt;(u|b|em|s|strong)&gt;/gi, '<$1>').replace(/&lt;\/(u|b|em|s|strong)&gt;/gi, '</$1>');
+    resultContent.innerHTML = '<pre style="white-space:pre-wrap;font-family:inherit;font-size:inherit;margin:0;">' + sanitized + '</pre>';
+    resultTag.textContent = tagMap[type] || type;
+    loading.classList.remove('show');
+    resultArea.classList.add('show');
+    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    historyLog.unshift({ type: tagMap[type], preview: text.slice(0, 70), content: text, time: new Date() });
+    if (historyLog.length > 30) historyLog.pop();
+    renderHomeHistory();
+
+  } catch(e) {
+    resultContent.textContent = '⚠️ 오류:\n' + e.message + '\n\nAPI 키를 확인하거나 잠시 후 다시 시도해 주세요.';
+    loading.classList.remove('show');
+    resultArea.classList.add('show');
+  }
+
+  btn.disabled = false;
+  btn.textContent = btnLabels[type];
+}
+
+async function copyResult(type) {
+  const text = document.getElementById(type+'-result-content').textContent;
+  const btn = document.querySelectorAll(`#${type}-result .btn-tool`)[0];
+  try { await navigator.clipboard.writeText(text); }
+  catch { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
+  btn.textContent = '✓ 복사됨'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = '📋 복사'; btn.classList.remove('copied'); }, 2000);
+}
+
+function printResult(type) {
+  const content = document.getElementById(type+'-result-content').textContent;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:'Noto Sans KR',sans-serif;padding:20mm;font-size:11pt;line-height:1.8;color:#111}pre{white-space:pre-wrap;font-family:inherit}@page{margin:20mm}</style><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet"></head><body><pre>${content.replace(/</g,'&lt;')}</pre></body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 800);
+}
+
+function renderHistory() {
+  const c = document.getElementById('history-container');
+  if (!historyLog.length) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">아직 생성된 자료가 없습니다</div></div>'; return; }
+  c.innerHTML = '<div class="history-list">' + historyLog.map((h,i) => `<div class="history-item" onclick="showDetail(${i})"><div class="history-type">${h.type}</div><div class="history-preview">${h.preview}...</div><div class="history-time">${fmt(h.time)}</div></div>`).join('') + '</div>';
+}
+function renderHomeHistory() {
+  const el = document.getElementById('home-history-list');
+  if (!historyLog.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">아직 생성된 자료가 없어요</div></div>'; return; }
+  el.innerHTML = '<div class="history-list">' + historyLog.slice(0,5).map((h,i) => `<div class="history-item" onclick="showDetail(${i})"><div class="history-type">${h.type}</div><div class="history-preview">${h.preview}...</div><div class="history-time">${fmt(h.time)}</div></div>`).join('') + '</div>';
+}
+function showDetail(idx) {
+  const h = historyLog[idx];
+  navigate('history');
+  const c = document.getElementById('history-container');
+  const d = document.createElement('div');
+  d.style.cssText = 'background:#fff;border:1px solid #ddd;border-radius:10px;padding:22px;margin-top:14px;';
+  d.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><strong>${h.type}</strong><button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:#aaa;">✕</button></div><pre style="white-space:pre-wrap;font-family:'Noto Sans KR',sans-serif;font-size:0.87rem;line-height:1.8;">${h.content.replace(/</g,'&lt;')}</pre>`;
+  c.appendChild(d);
+  d.scrollIntoView({ behavior: 'smooth' });
+}
+function fmt(d) { const p = n => String(n).padStart(2,'0'); return `${p(d.getHours())}:${p(d.getMinutes())}`; }
+// 해설용 — 박스 없이 텍스트만 렌더링
+function linesToHtmlNoBox(lines) {
+  function safeHtml(str) {
+    str = str.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    str = str.replace(/^\[지문\]\s*/i, '');
+    str = str.replace(/(적절하지|옳지|알맞지|바르지|올바르지)\s+(않은)/g, '$1 <u>$2</u>');
+    return str.replace(/(<\/?(u|b|em|s|strong|ruby|rt|rp)[^>]*>)/gi, '�$1�')
+              .split('�')
+              .map((p, idx) => idx % 2 === 1 ? p : p.replace(/</g,'&lt;').replace(/>/g,'&gt;'))
+              .join('');
+  }
+  return lines.map(line => {
+    const t = line.trim();
+    // <b> 태그 벗기고 순수 텍스트로 패턴 매칭
+    const stripped = t.replace(/<\/?(b|strong)>/gi, '').trim();
+    if (!stripped) return '<div class="spacer"></div>';
+    if (/^\[지문시작\]|\[지문끝\]/.test(stripped)) return '';
+    // [문제 N] 또는 [문제 N - ...] 형태
+    if (/^\[문제\s*\d+/.test(stripped)) return `<p class="q-title">${safeHtml(stripped)}</p>`;
+    // [정답 및 해설], 정답:, 해설: 등 다양한 형태 모두 처리
+    if (/^\[(정답 및 해설|정답|해설|채점)/.test(stripped) ||
+        /^(정답|해설)\s*[:：]/.test(stripped) ||
+        /^\[문제\s*\d+[^\]]*\]\s*(정답|해설)\s*[:：]/.test(stripped)) {
+      return `<p class="ans-title">${safeHtml(stripped)}</p>`;
+    }
+    if (/^[①②③④⑤]/.test(stripped)) return `<p class="choice">${safeHtml(stripped)}</p>`;
+    return `<p class="body-text">${safeHtml(stripped)}</p>`;
+  }).join('');
+}
+
+
+
+// ── DOCX (로컬 서버) ──
+async function downloadDocx(type) {
+  const text    = document.getElementById(type+'-result-content').textContent;
+  const tag     = document.getElementById(type+'-result-tag').textContent || type;
+  const btn     = document.querySelectorAll(`#${type}-result .btn-tool`)[1];
+  const examType = document.getElementById(type+'-exam-type')?.value || '';
+
+  btn.textContent = '⏳ 생성 중...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('http://localhost:3456/docx', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, tag, type, examType })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `서버 오류 ${res.status}`);
+    }
+
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `국어쌤AI_${tag}_${fmt(new Date())}.docx`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '✓ 저장됨';
+    setTimeout(() => { btn.textContent = '📄 워드'; btn.disabled = false; }, 2000);
+
+  } catch(e) {
+    alert('워드 생성 실패: ' + e.message + '\n\n서버가 실행 중인지 확인해 주세요.\n실행: node docx-server/server.js');
+    btn.textContent = '📄 워드';
+    btn.disabled = false;
+  }
+}
+
+// ── PDF (print dialog → PDF 저장) ──
+function parseContentForPdf(text, qcount) {
+  const sections = { passage: [], questions: [], answers: [] };
+  const lines = text.split('\n');
+
+  // ── 핵심: qcount 기반으로 마지막 문제 번호 찾기 ──
+  // [문제 N] 태그가 나오는 줄 인덱스를 모두 수집
+  let answerIdx = -1;
+
+  if (qcount) {
+    // 마지막 문제([문제 qcount]) 줄 위치 찾기
+    for (let li = 0; li < lines.length; li++) {
+      const t = lines[li].trim();
+      if (/^\[문제\s*\d+/.test(t)) {
+        const num = parseInt(t.match(/\d+/)[0]);
+        if (num === qcount) {
+          // 마지막 문제 발견 — 그 다음 [문제 N+1] 없이
+          // 마지막 선지(①②③④⑤)가 끝나는 줄 다음이 해설 시작
+          let lastChoiceLine = li;
+          for (let lj = li + 1; lj < lines.length; lj++) {
+            const tj = lines[lj].trim();
+            // 다음 문제 번호가 나오면 중단 (재생성된 경우)
+            if (/^\[문제\s*\d+/.test(tj)) break;
+            // 선지 줄 업데이트
+            if (/^[①②③④⑤]/.test(tj)) lastChoiceLine = lj;
+            // 정답/해설 섹션 시작 감지되면 그 줄로 확정
+            const tc = tj.replace(/<\/?(?:b|strong)>/gi, '');
+            if (/^\[정답|^▣\s*정답|^정답 및 해설/.test(tc)) {
+              answerIdx = lj;
+              break;
+            }
+          }
+          // 정답 섹션을 못 찾았으면 마지막 선지 다음 줄부터
+          if (answerIdx === -1) answerIdx = lastChoiceLine + 1;
+          break;
+        }
+      }
+    }
+  }
+
+  // qcount로 못 찾은 경우 텍스트 패턴으로 감지
+  if (answerIdx === -1) {
+    answerIdx = lines.findIndex(l => {
+      const t = l.trim().replace(/<\/?(?:b|strong)>/gi, '');
+      return /^\[정답 및 해설\]/.test(t) || /^▣\s*정답/.test(t) ||
+             /^정답 및 해설$/.test(t) || /^\[정답\]/.test(t);
+    });
+  }
+  const mainLines = answerIdx !== -1 ? lines.slice(0, answerIdx) : lines;
+  const answerLines = answerIdx !== -1 ? lines.slice(answerIdx) : [];
+  sections.answers = answerLines;
+
+  // 첫 [문제 N] 이전을 전체 지문으로 (마커 없는 경우)
+  const firstQIdx = mainLines.findIndex(l => /^\[문제\s*\d+/.test(l.trim()));
+
+  // 전체 지문이 있는 경우 (첫 문제 이전)
+  if (firstQIdx > 0) {
+    const passageLines = mainLines.slice(0, firstQIdx);
+    // [지문시작]/[지문끝] 마커가 있으면 그 안만 추출
+    const psIdx = passageLines.findIndex(l => /^\[지문시작\]/.test(l.trim()));
+    const peIdx = passageLines.findIndex(l => /^\[지문끝\]/.test(l.trim()));
+    if (psIdx !== -1 && peIdx !== -1) {
+      sections.passage = passageLines.slice(psIdx + 1, peIdx);
+    } else {
+      // 마커 없으면 전체를 지문으로 (빈 줄 제외)
+      sections.passage = passageLines.filter(l => l.trim() && !/^\[지문\]/.test(l.trim()));
+    }
+  }
+
+  sections.questions = mainLines.slice(Math.max(0, firstQIdx));
+  return sections;
+}
+
+
+function linesToHtml(lines) {
+  const result = [];
+  let i = 0;
+
+  function safeHtml(str) {
+    str = str.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    str = str.replace(/^\[지문\]\s*/i, '');
+    // '않은' 자동 밑줄
+    str = str.replace(/(적절하지|옳지|알맞지|바르지|올바르지)\s+(않은)/g, '$1 <u>$2</u>');
+    return str.replace(/(<\/?(u|b|em|s|strong|ruby|rt|rp)\b[^>]*>)/gi, '\x00$1\x00')
+              .split('\x00')
+              .map((p, idx) => idx % 2 === 1 ? p : p.replace(/</g,'&lt;').replace(/>/g,'&gt;'))
+              .join('');
+  }
+
+  function collectBox(startIdx) {
+    const boxLines = [];
+    let j = startIdx;
+    while (j < lines.length) {
+      const t = lines[j].trim();
+      if (/^\[문제\s*\d+/.test(t) || /^\[정답|^\[해설/.test(t) || /^[①②③④⑤]/.test(t)) break;
+      if (t === '' && j + 1 < lines.length && lines[j+1].trim() === '') { boxLines.push(t); j++; break; }
+      boxLines.push(t);
+      j++;
+    }
+    return { boxLines, nextIdx: j };
+  }
+
+  while (i < lines.length) {
+    const line = lines[i];
+    const t = line.trim();
+
+    // ── [지문시작]/[지문끝] 블록 → 박스 ──
+    if (/^\[지문시작\]/.test(t)) {
+      const boxLines = [];
+      i++;
+      // 시 지문인지 판별: 짧은 줄이 많으면 시, 긴 줄이 많으면 산문
+      let longLineCount = 0;
+      const tempLines = [];
+      while (i < lines.length) {
+        const tl = lines[i].trim();
+        if (/^\[지문끝\]/.test(tl)) { i++; break; }
+        if (tl.length > 30) longLineCount++;
+        tempLines.push(lines[i]);
+        i++;
+      }
+      const isProse = longLineCount > tempLines.filter(l=>l.trim()).length / 2;
+      const boxClass = isProse ? 'passage-box prose' : 'passage-box';
+      const inner = tempLines.map(l => `<p class="body-text">${safeHtml(l)}</p>`).join('');
+      result.push(`<div class="${boxClass}">${inner}</div>`);
+      continue;
+    }
+
+    // ── [지문끝] 단독 출현 시 무시 ──
+    if (/^\[지문끝\]/.test(t)) { i++; continue; }
+
+    // ── [보기] 박스 ──
+    if (/^[<〈《【\[]\s*보\s*기\s*[>\〉》】\]]/.test(t)) {
+      const { boxLines, nextIdx } = collectBox(i + 1);
+      const inner = boxLines.filter(l => l.trim())
+        .map(l => `<p class="body-text">${safeHtml(l)}</p>`).join('');
+      result.push(`<div class="box-small"><p class="box-label">${safeHtml(t)}</p>${inner}</div>`);
+      i = nextIdx;
+      continue;
+    }
+
+    // ── 비교 시 박스: (가), (나) 등 ──
+    if (/^[(（]\s*[가나다라마]\s*[)）](\s*[-─]\s*|\s+[가-힣]|\s*$)/.test(t)) {
+      const { boxLines, nextIdx } = collectBox(i + 1);
+      const inner = [t, ...boxLines.filter(l => l.trim())]
+        .map(l => `<p class="body-text">${safeHtml(l)}</p>`).join('');
+      result.push(`<div class="box-small compare-box">${inner}</div>`);
+      i = nextIdx;
+      continue;
+    }
+
+    // ── 지문 자동 감지 ──
+    // 케이스 1: --- 구분선 다음에 오는 텍스트 블록
+    if (t === '---' || t === '──' || t === '—') {
+      result.push('<div class="spacer"></div>');
+      i++;
+      // 다음 텍스트 블록이 지문인지 확인
+      const passageBlock = [];
+      let j = i;
+      while (j < lines.length) {
+        const tj = lines[j].trim();
+        if (/^[①②③④⑤]/.test(tj)) break;
+        if (/^\[문제\s*\d+/.test(tj)) break;
+        if (/^\[정답|^\[해설|^▣/.test(tj)) break;
+        if (/^\[지문시작\]/.test(tj)) break;
+        if (tj === '---' || tj === '──') break;
+        passageBlock.push(lines[j]);
+        j++;
+      }
+      const realLines = passageBlock.filter(l => l.trim());
+      if (realLines.length >= 2) {
+        const inner = passageBlock.map(l => `<p class="body-text">${safeHtml(l)}</p>`).join('');
+        result.push(`<div class="passage-box">${inner}</div>`);
+        i = j;
+        continue;
+      }
+      continue;
+    }
+
+    // 케이스 2: [문제N] 직전에 나오는 텍스트 블록 (선지 없이 [문제N]으로 끝나는 블록)
+    if (t && !/^[①②③④⑤]/.test(t) && !/^\[/.test(t) && !/^[(（]/.test(t)) {
+      const lastResult = result[result.length - 1] || '';
+      const prevIsQuestion = lastResult.includes('q-title') || lastResult.includes('spacer') || lastResult.includes('passage-box');
+      if (prevIsQuestion) {
+        const passageBlock = [];
+        let j = i;
+        while (j < lines.length) {
+          const tj = lines[j].trim();
+          if (/^[①②③④⑤]/.test(tj)) break;
+          if (/^\[문제\s*\d+/.test(tj)) break;
+          if (/^\[정답|^\[해설|^▣/.test(tj)) break;
+          if (/^\[지문시작\]/.test(tj)) break;
+          if (tj === '---') break;
+          passageBlock.push(lines[j]);
+          j++;
+        }
+        const realLines = passageBlock.filter(l => l.trim());
+        if (realLines.length >= 2) {
+          const isProseB = realLines.some(l => l.trim().length > 30);
+          const bCls = isProseB ? 'passage-box prose' : 'passage-box';
+          const inner = passageBlock.map(l => `<p class="body-text">${safeHtml(l)}</p>`).join('');
+          result.push(`<div class="${bCls}">${inner}</div>`);
+          i = j;
+          continue;
+        }
+      }
+    }
+
+    // ── 일반 라인 ──
+    if (!t) result.push('<div class="spacer"></div>');
+    else if (/^\[문제\s*\d+/.test(t)) result.push(`<p class="q-title">${safeHtml(t)}</p>`);
+    else if (/^\[(정답 및 해설|정답|해설|채점)/.test(t)) result.push(`<p class="ans-title">${safeHtml(t)}</p>`);
+    else if (/^[①②③④⑤]/.test(t)) result.push(`<p class="choice">${safeHtml(t)}</p>`);
+    else result.push(`<p class="body-text">${safeHtml(t)}</p>`);
+
+    i++;
+  }
+  return result.join('');
+}
+
+
+
+function downloadPdf(type) {
+  const text     = document.getElementById(type+'-result-content').textContent;
+  const tag      = document.getElementById(type+'-result-tag').textContent || type;
+  const examType = document.getElementById(type+'-exam-type')?.value || '';
+  // 문항 수 파악 (선택 UI 또는 텍스트에서 카운트)
+  const qcountEl = document.getElementById(type+'-qcount') || document.getElementById('pdf-qcount');
+  const qcountVal = qcountEl ? parseInt(qcountEl.value) : 0;
+  const detectedQ = (text.match(/\[문제\s*\d+/g) || []).length;
+  const qcountFinal = qcountVal || detectedQ;
+  const sec = parseContentForPdf(text, qcountFinal);
+  const hasPassage = sec.passage.some(l => l.trim());
+
+  const passageHtml = hasPassage
+    ? `<div class="passage-box">${sec.passage.filter(l=>l.trim()).map(l=>`<p class="body-text">${l.replace(/</g,'&lt;')}</p>`).join('')}</div>`
+    : '';
+
+  const questionsHtml = linesToHtml(sec.questions);
+  const answersHtml = sec.answers.length > 0
+    ? `<div class="ans-section"><p class="ans-header-title">▣ 정답 및 해설</p><div class="two-col">${linesToHtmlNoBox(sec.answers)}</div></div>`
+    : '';
+
+  const css = `
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; font-size: 10.5pt; line-height: 1.8; color: #111; }
+    .doc-title { font-size: 15pt; font-weight: 700; color: #c0392b; border-bottom: 2.5px solid #c0392b; padding-bottom: 5px; margin-bottom: 3px; }
+    .doc-subtitle { font-size: 9pt; color: #888; text-align: right; margin-bottom: 14px; }
+    .two-col { column-count: 2; column-gap: 12mm; column-rule: 1px solid #ccc; }
+    .passage-box { border: 1.5px solid #555; background: #f8f6f2; padding: 10px 14px; margin-bottom: 10px; break-inside: avoid; }
+    .passage-box.prose { text-align: justify !important; word-break: keep-all !important; }
+    .passage-box.prose p { text-align: justify !important; word-break: keep-all !important; white-space: normal !important; margin: 2px 0; font-size: 10pt; }
+    .passage-box p { margin: 2px 0; font-size: 10pt; white-space: normal; }
+    .box-small { border: 1px solid #888; background: #f4f4f4; padding: 7px 12px; margin: 6px 0 6px 0; break-inside: avoid; font-size: 10pt; }
+    .box-label { font-weight: 700; font-size: 10pt; text-align: center; margin-bottom: 4px; }
+    .compare-box { border-color: #2c5f8a; background: #f0f4f8; }
+    p { margin: 0; }
+    .body-text { font-size: 10.5pt; margin: 2px 0; }
+    .prose .body-text { text-align: justify !important; word-break: keep-all !important; white-space: normal !important; }
+    .q-title { font-weight: 700; font-size: 10.5pt; margin-top: 10px; margin-bottom: 3px; break-after: avoid; }
+    .ans-title { font-weight: 700; font-size: 10.5pt; color: #2c5f8a; margin-top: 14px; margin-bottom: 3px; }
+    .choice { font-size: 10pt; padding-left: 1em; margin: 2px 0; }
+    .spacer { height: 5px; }
+    .page-break { break-before: page; page-break-before: always; }
+    .ans-col { break-before: page; page-break-before: always; margin-top: 0; }
+    .ans-section { break-before: page; page-break-before: always; }
+    .ans-header-title { font-size: 13pt; font-weight: 700; color: #2c5f8a; border-bottom: 2px solid #2c5f8a; padding-bottom: 6px; margin-bottom: 14px; }
+    u { text-decoration: underline; text-underline-offset: 2px; }
+    b, strong { font-weight: 700; }
+    em { font-style: italic; }
+    @page { size: A4; margin: 18mm; }
+  `;
+
+  const html = `<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>${css}</style>
+</head><body>
+<div class="doc-title">국어쌤 AI — ${tag.replace(/</g,'&lt;')}</div>
+<div class="doc-subtitle">${examType.replace(/</g,'&lt;')}</div>
+<div class="two-col">
+  ${passageHtml}
+  ${questionsHtml}
+</div>
+${answersHtml}
+</body></html>`;
+
+  // iframe 방식 — 팝업 차단 없고 첫 장 백지 없음
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;';
+  document.body.appendChild(iframe);
+
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(html);
+  iframe.contentDocument.close();
+
+  // 폰트 로딩 대기 후 인쇄
+  iframe.contentWindow.onload = () => {
+    setTimeout(() => {
+      // 해설 섹션 강제 페이지 브레이크
+      const ansSection = iframe.contentDocument.querySelector('.ans-section');
+      if (ansSection) {
+        ansSection.style.cssText += 'break-before:page!important;page-break-before:always!important;';
+      }
+      // two-col도 페이지 브레이크 방지
+      const twoCols = iframe.contentDocument.querySelectorAll('.two-col');
+      twoCols.forEach(el => {
+        el.style.breakInside = 'auto';
+      });
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      setTimeout(() => document.body.removeChild(iframe), 1500);
+    }, 900);
+  };
+}
+
+// ── PDF 교과서 출제 ──
+let pdfBase64 = null;
+let pdfTotalPages = 0;
+
+function onPdfSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 20 * 1024 * 1024) {
+    alert('파일 크기가 20MB를 초과합니다.\n큰 PDF는 페이지를 나눠서 업로드해 주세요.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    // base64에서 data:application/pdf;base64, 부분 제거
+    pdfBase64 = e.target.result.split(',')[1];
+
+    // 파일명/크기 표시
+    document.getElementById('pdf-filename').textContent = `📄 ${file.name}`;
+    document.getElementById('pdf-pagecount').textContent = `  (${(file.size/1024/1024).toFixed(1)}MB)`;
+    document.getElementById('pdf-info').style.display = 'flex';
+    document.getElementById('pdf-options-card').style.display = 'block';
+
+    // 업로드 영역 스타일 변경
+    const area = document.getElementById('pdf-upload-area');
+    area.classList.add('has-file');
+    document.getElementById('pdf-upload-text').innerHTML = '✓ 파일 선택됨<br><span style="font-size:0.75rem;color:#2a6a2a">다른 파일로 바꾸려면 클릭</span>';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPdf() {
+  pdfBase64 = null;
+  document.getElementById('pdf-file-input').value = '';
+  document.getElementById('pdf-info').style.display = 'none';
+  document.getElementById('pdf-options-card').style.display = 'none';
+  document.getElementById('pdf-result').classList.remove('show');
+  const area = document.getElementById('pdf-upload-area');
+  area.classList.remove('has-file');
+  document.getElementById('pdf-upload-text').innerHTML = '클릭하여 PDF 파일 선택<br><span style="font-size:0.75rem;color:#aaa">최대 20MB · 교과서, 문제집 PDF</span>';
+}
+
+function togglePageRange() {
+  const val = document.getElementById('pdf-range-type').value;
+  document.getElementById('pdf-page-range-group').style.display = val === 'page' ? 'block' : 'none';
+  document.getElementById('pdf-unit-name-group').style.display = val === 'unit' ? 'block' : 'none';
+}
+
+async function generateFromPdf() {
+  const apiKey = getApiKey();
+  if (!apiKey) { alert('상단에 Gemini API 키를 먼저 입력해 주세요.'); return; }
+  if (!pdfBase64) { alert('PDF 파일을 먼저 업로드해 주세요.'); return; }
+
+  const rangeType  = document.getElementById('pdf-range-type').value;
+  const pageRange  = document.getElementById('pdf-page-range').value.trim();
+  const unitName   = document.getElementById('pdf-unit-name').value.trim();
+  const examType   = document.getElementById('pdf-exam-type').value;
+  const grade      = document.getElementById('pdf-grade').value;
+  const level      = document.getElementById('pdf-level').value;
+  const qcount     = parseInt(document.getElementById('pdf-qcount').value);
+  const extra      = document.getElementById('pdf-extra').value.trim();
+
+  let rangeDesc = '전체 내용';
+  if (rangeType === 'page' && pageRange) rangeDesc = `${pageRange} 페이지`;
+  if (rangeType === 'unit' && unitName) rangeDesc = `"${unitName}" 단원`;
+
+  const prompt = `당신은 대한민국 국어 교사 보조 AI입니다. 첨부된 교과서/문제집 PDF를 읽고 문제를 생성해 주세요.
+
+출제 조건:
+- 출제 범위: ${rangeDesc}
+- 시험 유형: ${examType}
+- 학년: ${grade}
+- 난이도: ${level}
+- 문항 수: 정확히 ${qcount}문제 ([문제 1]부터 [문제 ${qcount}]까지 빠짐없이)
+${extra ? `- 추가 지시: ${extra}` : ''}
+
+⚠️ 반드시 지켜야 할 규칙:
+- 강조 표현에 **텍스트** 마크다운 절대 사용 금지 — 강조 필요시 <b>텍스트</b> 사용
+- 부정형 문제('적절하지 않은 것은?')에서 '않은'에 반드시 <u>않은</u> 태그로 밑줄 표시 (예: 적절하지 <u>않은</u> 것은?)
+- 선택지는 ①②③④⑤ 기호 사용 (5지선다)
+- 문제 번호는 지문 아래 질문 문장 바로 앞에 표시할 것. 형식: [문제 N - 유형명] 질문 내용 (한 줄로)
+  예시: [문제 3 - 화자 파악] 위 시의 화자로 가장 적절한 것은?
+  지문 위에 문제 번호만 단독으로 줄바꿈하여 쓰지 말 것
+- 각 문제에 지문이 있으면 반드시 아래 형식으로 출력할 것 (절대 생략 불가):
+[지문시작]
+지문 내용
+[지문끝]
+[문제 N - 유형명] 질문 내용
+마커 없이 지문을 출력하면 박스가 렌더링되지 않음. 위 형식을 100% 준수할 것.
+- 정답과 해설은 전체 문제 후 [정답 및 해설] 섹션으로 제시
+
+지문 발췌 및 출제 규칙:
+- 한 지문당 문제는 반드시 정확히 3문제씩 출제 (비문학·문학 모두 동일, 예외 없음)
+- 시(현대시·고전시가): 전문(全文) 발췌 — 3문제 모두 같은 시 전문을 지문으로 사용
+- 소설·비문학: 3문제마다 반드시 서로 다른 장면/단락을 발췌할 것. 같은 지문 반복 절대 금지!
+  예) 소설 작품 A로 3문제 출제 시:
+    → 문제 1: [지문시작] A 장면1 발췌 [지문끝]
+    → 문제 2: [지문시작] A 장면2 발췌 (장면1과 다른 부분) [지문끝]
+    → 문제 3: [지문시작] A 장면3 발췌 (장면1,2와 다른 부분) [지문끝]
+- 비문학 수능형: 지문 전문 발췌 / 내신형: 부분 발췌 가능
+
+시어 기호 표시 규칙 (매우 중요):
+- 시 지문에서 문제에 언급할 시어에 반드시 ⓐ, ⓑ, ⓒ... 기호+<u>밑줄</u> 표시
+  지문 예시: 나는 <u>ⓐ밥 냄새 솔솔 익어 가는 항구</u>에 앉아
+- 문제에서는 기호만 쓰고 시어/문장 절대 표기 금지
+  올바른 예: "ⓐ의 의미로 가장 적절한 것은?" (O)
+  잘못된 예: "ⓐ밥 냄새 솔솔 익어 가는 항구의 의미는?" (X) ← 기호 옆에 시어 쓰면 절대 안 됨
+  잘못된 예: "(가)의 ⓐ물고기 일동과 (나)의 ⓑ산버들..." (X) ← 기호 옆에 내용 쓰면 안 됨
+- 소설 지문도 동일하게 핵심 어구에 기호+밑줄 표시, 문제에서는 기호만
+
+비교·대조 문제 규칙:
+- 단원 내 시가 2편 이상일 경우 반드시 두 시를 함께 제시하는 비교·대조 문제를 1세트(3문제) 포함할 것
+- 비교 문제 지문 형식: [지문시작] (가) 시 제목 / 작가\n시 내용\n\n(나) 시 제목 / 작가\n시 내용 [지문끝]
+
+PDF 레이아웃 주의사항:
+- PDF에는 학습활동, 도움말, 준비하기 등 교과서 부가 요소 포함됨
+- 실제 문학/비문학 지문과 핵심 개념만 추출하여 출제할 것
+- 교과서 활동 문제를 그대로 옮기지 말고 새로운 시험 문항으로 재구성할 것
+- 문제 유형 중복 금지 — 화자/정서, 시어 의미, 표현 방식, 서술자, 인물 심리, 주제, 구조 분석 등 다양하게
+- 적절한 것과 적절하지 않은 것 문제 비율 반드시 6:4 유지
+  20문제 기준: 적절한 것 12문제, 적절하지 않은 것 8문제 필수
+  각 지문 세트(3문제) 내에서 최소 1문제는 "적절하지 않은 것은?" 형태로 출제
+- 10문제당 1문제는 반드시 '모두 고르는 형태'로 출제 (20문제면 2문제 필수)
+  형식: <보기>에서 옳은 것을 모두 고른 것은? / ㄱ.ㄴ.ㄷ 중 선택
+
+PDF에서 해당 범위의 지문과 핵심 내용을 파악하여 실제 내신 시험에 바로 쓸 수 있는 고품질 문항을 생성해 주세요.`;
+
+  const loading = document.getElementById('pdf-loading');
+  const loadingText = document.getElementById('pdf-loading-text');
+  const resultArea = document.getElementById('pdf-result');
+  const resultContent = document.getElementById('pdf-result-content');
+  const btn = document.querySelector('#page-pdf .btn-generate');
+
+  loading.classList.add('show');
+  resultArea.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = '생성 중...';
+  loadingText.textContent = 'PDF를 읽고 문제를 생성하고 있습니다... (시간이 조금 걸릴 수 있어요)';
+
+  try {
+    const model = 'gemini-2.5-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            // PDF 파일
+            { inline_data: { mime_type: 'application/pdf', data: pdfBase64 } },
+            // 프롬프트
+            { text: prompt }
+          ]
+        }],
+        generationConfig: { maxOutputTokens: 16384, temperature: 0.7 }
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '응답이 비었습니다.';
+
+    // 문항 수 검증 및 보완
+    const found = (text.match(/\[문제\s*\d+/g) || []).length;
+    const hasAnswers = /\[정답 및 해설\]|▣\s*정답/.test(text);
+    if (found < qcount || !hasAnswers) {
+      const missing = qcount - found;
+      const retryPrompt = found < qcount
+        ? `위 내용에 이어서 [문제 ${found+1}]부터 [문제 ${qcount}]까지 나머지 ${missing}문제를 출력하고, 마지막에 [정답 및 해설] 섹션도 반드시 포함하세요.`
+        : `[정답 및 해설] 섹션이 누락되었습니다. 1번부터 ${qcount}번까지 모든 문제의 정답과 해설을 출력하세요.`;
+      const res2 = await fetch(url, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          contents: [
+            { role: 'user', parts: [{ inline_data: { mime_type: 'application/pdf', data: pdfBase64 } }, { text: prompt }] },
+            { role: 'model', parts: [{ text }] },
+            { role: 'user', parts: [{ text: retryPrompt }] }
+          ],
+          generationConfig: { maxOutputTokens: 16384, temperature: 0.7 }
+        })
+      });
+      const data2 = await res2.json();
+      const extra2 = data2.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      if (extra2) text = text + '\n\n' + extra2;
+    }
+
+    // <u>, <b> 태그 렌더링을 위해 innerHTML 사용 (XSS 방지: 허용 태그만)
+    const sanitized = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/&lt;(u|b|em|s|strong)&gt;/gi, '<$1>').replace(/&lt;\/(u|b|em|s|strong)&gt;/gi, '</$1>');
+    resultContent.innerHTML = '<pre style="white-space:pre-wrap;font-family:inherit;font-size:inherit;margin:0;">' + sanitized + '</pre>';
+    document.getElementById('pdf-result-tag').textContent = `교과서 출제 · ${rangeDesc}`;
+    loading.classList.remove('show');
+    resultArea.classList.add('show');
+    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    historyLog.unshift({ type: '교과서 출제', preview: text.slice(0, 70), content: text, time: new Date() });
+    if (historyLog.length > 30) historyLog.pop();
+    renderHomeHistory();
+
+  } catch(e) {
+    resultContent.textContent = '⚠️ 오류:\n' + e.message + '\n\nPDF 크기가 너무 크거나 API 키를 확인해 주세요.';
+    loading.classList.remove('show');
+    resultArea.classList.add('show');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✦ 교과서 기반 문제 생성';
+}
+</script>
+
+
+</body></html>
